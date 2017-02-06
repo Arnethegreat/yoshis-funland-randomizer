@@ -1,5 +1,3 @@
-
-
 org $238000
 
 !do_custom_level_order = #$01
@@ -34,5 +32,23 @@ db $00, $00
 
 
 ; 1-bit per mode
+; 8-bytes per level
 custom_mode_settings:
-db $00
+; level 1-1
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+; level 1-2
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %00000000
+db %00000000

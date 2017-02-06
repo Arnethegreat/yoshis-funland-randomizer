@@ -3,8 +3,6 @@ org $01C18B
 
 freecode $FF
 
-!drunk_mode_flag = #$00
-
 in_level_hijack:
     PHP
 
@@ -12,8 +10,7 @@ in_level_hijack:
     PHK
     PLB
 
-
-    JSR drunk_mode
+    ; JSR drunk_mode
     ; JSR hard_mode
     ; JSR death_star_counter
     ; JSR extended_flutter
@@ -27,14 +24,11 @@ in_level_hijack:
     ; JSR random_cursor
     ; JSR bouncy_castle
     ; JSR tongue_everything
-    ; JSR poison_coins ; doesn't work
-    JSR no_flutter
-    ; JSR no_tongue
+    ; JSR no_flutter
+    JSR no_tongue
 
 .ret
     PLB
     PLP 
     JSL $008259 ; init oam we replaced with hijack
     RTL
-
-incsrc modes.asm

@@ -130,7 +130,7 @@ boost_mode:
 packmule_speed_table:
 ; unused
     dw $0000
-; positive alues
+; positive values
     dw $02A0
     dw $0250
     dw $0200
@@ -280,33 +280,22 @@ tongue_everything:
 
 ;=================================
 
-
-
 no_flutter:
     STZ $60D2
 .ret
     RTS
 
 ;=================================
-; still can tongue some stuff
+; puffy cheeks 
+; 
 
 no_tongue:
+    LDA #$80
     STZ $6150
-    STZ $6162
-    ; STZ $6168
+    STZ $6151
+    STA $6162
+    STA $6163
+    STZ $6168
+    STZ $6169
 .ret
     RTS
-
-;=================================
-;=========Long Routines===========
-;=================================
-
-!coin_poison_amount = #$55
-
-poison_coins:
-    
-    
-.ret
-    INC $037B
-    LDA $037B
-    RTL

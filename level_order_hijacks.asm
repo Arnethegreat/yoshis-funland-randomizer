@@ -21,19 +21,6 @@ org $01C14B
 org $00B444
     autoclean JSL restore_world
 
-; Hack W6 dark tileset to load based 
-; on level number instead of world
-;org $00B346
-;    LDA $021A
-;    CMP #$003C
-;    BCC $0C
-
-; same as above but for palette
-;org $00BA37
-;    LDA $021A
-;    CMP #$003C
-;    BCC $05
-
 freecode $FF
 
 ;=================================
