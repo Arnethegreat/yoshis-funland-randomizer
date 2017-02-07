@@ -1,7 +1,7 @@
-incsrc settings.asm
+incsrc config/settings.asm
 
-incsrc in_level_hijack.asm
-incsrc modes.asm
-incsrc event_hijacks.asm
-incsrc modes_long.asm
-incsrc level_order_hijacks.asm
+incsrc hijacks/in_level_hijack.asm
+incsrc modes/modes.asm
+incsrc hijacks/event_hijacks.asm
+incsrc modes/modes_long.asm
+incsrc hijacks/level_order_hijacks.asm

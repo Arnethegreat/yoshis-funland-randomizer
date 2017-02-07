@@ -1,0 +1,35 @@
+; enable bits for each mode format
+; 8-bytes per world map level (12 tiles per world)
+custom_mode_settings:
+db %76543210
+; 7 = drunk_mode
+; 6 = hard_mode
+; 5 = death_star_counter
+; 4 = extended_flutter
+; 3 = sticky_ground
+; 2 = filled_mouth
+; 1 = boost_mode
+; 0 = packmule_mode
+db %76543210
+; 7 = god_mode
+; 6 = turbo_mode
+; 5 = reverse_control_mode
+; 4 = random_cursor
+; 3 = bouncy_castle
+; 2 = tongue_everything
+; 1 = no_flutter
+; 0 = no_tongue
+db %76543210
+; 7 = poison_coins
+; 6 = 
+; 5 = 
+; 4 = 
+; 3 = 
+; 2 = 
+; 1 = 
+; 0 = 
+db %76543210
+db %76543210
+db %76543210
+db %76543210
+db %76543210
