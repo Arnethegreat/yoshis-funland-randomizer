@@ -142,8 +142,12 @@ in_level_hijack:
     LDX #$01
     STX !do_poison_flowers
 +
-
-
+    ASL A
+    BPL +
+    PHA
+    JSR floor_is_lava
+    PLA
++
 .ret
     PLB
     PLP 

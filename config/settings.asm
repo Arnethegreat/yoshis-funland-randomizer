@@ -1,16 +1,52 @@
 org $238000
-
-!do_custom_level_order = #$01
+; vars
 !original_level = $1410
 !original_world = $1412
 !do_poison_coins = $1500
 !do_poison_flowers = $1502
-
-
-!flower_poison_amount = #$FFC0
+!floor_timer = $1440
+;=================================
+;=================================
+;=================================
+; Global Settings (for now)
+;=================================
+!do_custom_level_order = #$01
+;=================================
 !coin_poison_amount = #$FFF0
+;=================================
+!flower_poison_amount = #$FFC0
+;=================================
+packmule_speed_table:
+; unused
+    dw $0000
+; positive values
+    dw $02A0
+    dw $0250
+    dw $0200
+    dw $01A0
+    dw $0150
+    dw $0100
+; negative values
+    dw -$02A0
+    dw -$0250
+    dw -$0200
+    dw -$01A0
+    dw -$0150
+    dw -$0100
+;=================================
+!boost_amount = $0020
+!max_speed = $0500
 
+boost_amount_table:
+    dw !boost_amount
+    dw $0000-!boost_amount
 
+max_speed_table:
+    dw !max_speed
+    dw $0000-!max_speed
+;=================================
+;=================================
+;=================================
 custom_level_order:
 ; World 1
 ; levels 1-1 -> 1-8
@@ -63,7 +99,7 @@ custom_mode_settings:
 ; level 1-1
 db %00000000
 db %00000000
-db %11000000
+db %00000000
 db %00000000
 db %00000000
 db %00000000
@@ -71,7 +107,7 @@ db %00000000
 db %00000000
 ; level 1-2
 db %00000000
-db %00000010
+db %00000000
 db %00000000
 db %00000000
 db %00000000

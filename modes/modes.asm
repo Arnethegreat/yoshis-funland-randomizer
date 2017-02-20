@@ -93,17 +93,6 @@ filled_mouth:
 
 ;=================================
 
-!boost_amount = $0020
-!max_speed = $0500
-
-boost_amount_table:
-    dw !boost_amount
-    dw $0000-!boost_amount
-
-max_speed_table:
-    dw !max_speed
-    dw $0000-!max_speed
-
 boost_mode:
     LDA $6070
     AND #$40 ;\
@@ -130,24 +119,6 @@ boost_mode:
 
 ;=================================
 
-packmule_speed_table:
-; unused
-    dw $0000
-; positive values
-    dw $02A0
-    dw $0250
-    dw $0200
-    dw $01A0
-    dw $0150
-    dw $0100
-; negative values
-    dw -$02A0
-    dw -$0250
-    dw -$0200
-    dw -$01A0
-    dw -$0150
-    dw -$0100
-
 packmule_mode:
     LDX $7DF6 ; egg count
     BEQ .ret
@@ -170,7 +141,8 @@ packmule_mode:
 .pos
     CMP packmule_speed_table,x
     BCC .ret
-    LDA packmule_speed_table,y
+    TYX
+    LDA packmule_speed_table,x
     ; SBC #$0016
     STA !yoshi_x_speed
 .ret
@@ -305,4 +277,36 @@ no_tongue:
     STZ $6168
     STZ $6169
 .ret
+    RTS
+
+;=================================
+!lava_time_amount = #$0000
+
+floor_is_lava:
+    REP #$30
+    LDA $60AC
+    BNE .ret
+    LDA $60FC
+    AND #$0007
+    ORA $61B4
+    BEQ .ret
+
+    LDA !floor_timer
+    BMI .damage
+
+    DEC !floor_timer
+    BRA .ret
+
+.damage
+    LDA $03B6
+    BNE .decrease
+    STZ $03B6
+    BRA .reset_timer
+.decrease
+    DEC $03B6
+.reset_timer
+    LDA !lava_time_amount
+    STA !floor_timer
+.ret
+    SEP #$30
     RTS

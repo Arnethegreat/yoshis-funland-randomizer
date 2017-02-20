@@ -22,7 +22,7 @@ db %76543210
 db %76543210
 ; 7 = poison_coins
 ; 6 = poison flowers
-; 5 = 
+; 5 = floor is lava
 ; 4 = 
 ; 3 = 
 ; 2 = 
