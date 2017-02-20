@@ -4,8 +4,6 @@ freecode $FF
 ;=========Long Routines===========
 ;=================================
 
-!coin_poison_amount = #$FFF0
-
 poison_coins:
     LDA !do_poison_coins
     BEQ .ret
@@ -27,8 +25,6 @@ poison_coins:
     LDA $037B
     RTL
 
-
-!flower_poison_amount = #$FFF0
 
 poison_flowers:
     LDA !do_poison_flowers

@@ -25,9 +25,6 @@ freecode $FF
 
 ;=================================
 
-!original_level = $1410
-!original_world = $1412
-
 print pc
 ; 8-bit A/X/Y
 set_new_level:

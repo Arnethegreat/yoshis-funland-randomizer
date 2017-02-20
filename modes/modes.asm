@@ -1,4 +1,3 @@
-;freecode $FF
 !yoshi_x_speed = $60B4
 
 ;=================================
@@ -25,7 +24,10 @@ hard_mode:
     LDA $61B3 ; baby mario state
     CMP #$80
     BEQ .ret
-    STZ $03B6
+    LDA $60AC
+    BNE .ret
+    LDA #$01
+    STA $03B6
     STZ $03B7
 .ret
     RTS
@@ -61,6 +63,7 @@ extended_flutter:
 
 sticky_ground:
     LDA $60AC
+    ORA $60AE
     BNE .ret
     REP #$20
     LDA $60C0
@@ -90,8 +93,8 @@ filled_mouth:
 
 ;=================================
 
-!boost_amount = $0050
-!max_speed = $0700
+!boost_amount = $0020
+!max_speed = $0500
 
 boost_amount_table:
     dw !boost_amount
@@ -180,10 +183,10 @@ packmule_mode:
 ; add fun effect to Yoshi 
 
 god_mode:
-    LDA $60AE
-    BNE .ret
-    LDA #$02
-    STA $7E04
+    ; LDA $60AE
+    ; BNE .ret
+    ; LDA #$02
+    ; STA $7E04
 .ret
     RTS
 
@@ -202,6 +205,8 @@ turbo_mode:
 ;=================================
 
 reverse_control_mode:
+    LDA $60AC
+    BNE .ret
     LDA #$04
     STA $61EC
 .ret
@@ -236,6 +241,8 @@ random_cursor:
 
 bouncy_castle:
     REP #$30
+    LDA $60AC
+    BNE .ret
     LDA $60FC
     AND #$0007
     ORA $61B4
@@ -244,7 +251,7 @@ bouncy_castle:
     LDA #$0013    
     JSL $0085D2 ; play boing sound 
     STZ $60D4
-    LDA #$FA00
+    LDA #$FB00
     STA $60AA
     LDA #$0006
     STA $60C0

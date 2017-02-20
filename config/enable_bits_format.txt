@@ -1,6 +1,6 @@
 ; enable bits for each mode format
 ; 8-bytes per world map level (12 tiles per world)
-custom_mode_settings:
+; custom_mode_settings:
 db %76543210
 ; 7 = drunk_mode
 ; 6 = hard_mode
@@ -21,7 +21,7 @@ db %76543210
 ; 0 = no_tongue
 db %76543210
 ; 7 = poison_coins
-; 6 = 
+; 6 = poison flowers
 ; 5 = 
 ; 4 = 
 ; 3 = 
