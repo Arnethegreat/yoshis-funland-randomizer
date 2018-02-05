@@ -119,47 +119,35 @@ boost_mode:
 
 ;=================================
 
-; packmule_mode:
-;     LDX $7DF6 ; egg count
-;     BEQ .ret
-;     LDA $60AE
-;     BNE .ret
-;     TXY
-;     REP #$20
-;     LDA !yoshi_x_speed
-;     BPL .pos
-; .neg
-;     EOR #$FFFF
-;     INC A
-;     PHA
-;     TXA
-;     CLC
-;     ADC #$000C
-;     TAY
-;     PLA
+packmule_mode:
+    LDX $7DF6 ; egg count
+    BEQ .ret
+    LDA $60AE
+    BNE .ret
+    TXY
+    REP #$20
+    LDA !yoshi_x_speed
+    BPL .pos
+.neg
+    EOR #$FFFF
+    INC A
+    PHA
+    TXA
+    CLC
+    ADC #$000C
+    TAY
+    PLA
 
-; .pos
-;     CMP packmule_speed_table,x
-;     BCC .ret
-;     TYX
-;     LDA packmule_speed_table,x
-;     ; SBC #$0016
-;     STA !yoshi_x_speed
-; .ret
-;     SEP #$30
-;     RTS
-
-
-;=================================
-
-
-;=================================
-
-placeholder_1:
-
+.pos
+    CMP packmule_speed_table,x
+    BCC .ret
+    TYX
+    LDA packmule_speed_table,x
+    ; SBC #$0016
+    STA !yoshi_x_speed
 .ret
+    SEP #$30
     RTS
-
 
 ;=================================
 ; TODO: needs more testing
@@ -321,16 +309,4 @@ floor_is_lava:
     STA !floor_timer
 .ret
     SEP #$30
-    RTS
-
-enable_poison_coin:
-    LDA #$0001
-    STA !do_poison_coins
-.ret
-    RTS
-
-enable_poison_flower:
-    LDA #$0001
-    STA !do_poison_flowers
-.ret
     RTS

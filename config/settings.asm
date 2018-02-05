@@ -16,46 +16,23 @@ org $238000
 ;=================================
 !flower_poison_amount = #$FFC0
 ;=================================
-
-modes_pointers:
-    dw mode_return                     ; 00
-    dw drunk_mode                      ; 02
-    dw hard_mode                       ; 04
-    dw death_star_counter              ; 06
-    dw extended_flutter                ; 08
-    dw sticky_ground                   ; 0A
-    dw filled_mouth                    ; 0C
-    dw placeholder_1                   ; 0E
-    dw god_mode                        ; 10
-    dw turbo_mode                      ; 12
-    dw reverse_control_mode            ; 14
-    dw random_cursor                   ; 16
-    dw bouncy_castle                   ; 18
-    dw tongue_everything               ; 1A
-    dw no_flutter                      ; 1C
-    dw no_tongue                       ; 1E
-    dw floor_is_lava                   ; 20
-    dw enable_poison_coin              ; 22
-    dw enable_poison_flower            ; 24
-
-; Remove
-; packmule_speed_table:
-; ; unused
-;     dw $0000
-; ; positive values
-;     dw $02A0
-;     dw $0250
-;     dw $0200
-;     dw $01A0
-;     dw $0150
-;     dw $0100
-; ; negative values
-;     dw -$02A0
-;     dw -$0250
-;     dw -$0200
-;     dw -$01A0
-;     dw -$0150
-;     dw -$0100
+packmule_speed_table:
+; unused
+    dw $0000
+; positive values
+    dw $02A0
+    dw $0250
+    dw $0200
+    dw $01A0
+    dw $0150
+    dw $0100
+; negative values
+    dw -$02A0
+    dw -$0250
+    dw -$0200
+    dw -$01A0
+    dw -$0150
+    dw -$0100
 ;=================================
 !boost_amount = $0020
 !max_speed = $0500
