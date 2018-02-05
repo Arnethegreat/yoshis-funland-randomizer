@@ -7,7 +7,7 @@ org $01BEC2
 org $17B47F
     nop
     nop
-    autoclean JSL set_new_level
+    autoclean JSL prepare_level_settings
 
 ;org $17E72C
 ;    autoclean JSL set_new_level
@@ -27,12 +27,21 @@ freecode $FF
 
 print pc
 ; 8-bit A/X/Y
-set_new_level:
+prepare_level_settings:
     PHX
+    PHA
+    PHY
+    PHP
+
+    JSR get_level_settings
+    
+
+set_new_level:
 
     LDA !do_custom_level_order
     BEQ .ret
 
+    SEP #$30
     LDX $021A
     STX !original_level
     LDA $0218
@@ -52,7 +61,12 @@ set_new_level:
     STX $0218
 
 .ret
+    SEP #$30
+    PLP
+    PLY
+    PLA
     PLX
+
     STZ $03B8
     STZ $03B9
     RTL
@@ -91,4 +105,25 @@ restore_world:
     STA $0218
 .ret
     RTL
+
+;=================================
+
+; walk through level modes and count end markers ($FF)
+; until matching with current level number
+
+get_level_settings:
+    REP #$10        ; 16-bit index registers
+    LDX #$0000      ; Settings Index
+    LDY #$0000      ; Level Counter
+.find_index
+    CPY $021A
+    BEQ .unpack      ; if found matching level
+    LDA custom_mode_settings,x
+    CMP #$FF
+    BNE +           ; if not end marker, just go to next item
+    INY             ; Last level setting item
++
+    INX
+
+.unpack
     
