@@ -1,141 +1,41 @@
 <html>
 <body>
 
-packmule: <input type="checkbox" id="packmule" />
-boost: <input type="checkbox" id="boost" />
+Random Seed: <input type="number" id="randomSeed">
+<button onclick="generateSeed()">Random</button><br>
+Randomize Level Order: <input type="checkbox" id="randomLevelOrder" /><br>
+Include Extra Levels: <input type="checkbox" id="extraLevels" /><br>
+Include Bonus Levels: <input type="checkbox" id="bonusLevels" /><br>
+
+<button onclick="generateLevelOrder()">Generate Level Order</button><br>
+
+
+
+boost: <input type="checkbox" id="boost" /><br>
 filledMouth: <input type="checkbox" id="filledMouth" /><br>
-stickyGround: <input type="checkbox" id="stickyGround" />
+stickyGround: <input type="checkbox" id="stickyGround" /><br>
 extendedFlutter: <input type="checkbox" id="extendedFlutter" /><br>
-deathStarCounter: <input type="checkbox" id="deathStarCounter" />
+deathStarCounter: <input type="checkbox" id="deathStarCounter" /><br>
 hardMode: <input type="checkbox" id="hardMode" /><br>
-drunkMode: <input type="checkbox" id="drunkMode" />
+drunkMode: <input type="checkbox" id="drunkMode" /><br>
 
 noTongue: <input type="checkbox" id="noTongue" /><br>
-noFlutter: <input type="checkbox" id="noFlutter" />
+noFlutter: <input type="checkbox" id="noFlutter" /><br>
 bouncyCastle: <input type="checkbox" id="bouncyCastle" /><br>
-randomCursor: <input type="checkbox" id="randomCursor" />
+randomCursor: <input type="checkbox" id="randomCursor" /><br>
 reverseControl: <input type="checkbox" id="reverseControl" /><br>
-turbo: <input type="checkbox" id="turbo" />
+turbo: <input type="checkbox" id="turbo" /><br>
 powerfulYoshi: <input type="checkbox" id="powerfulYoshi" /><br>
 poisonCoins: <input type="checkbox" id="poisonCoins" /><br>
+
 
 <br>
 max enabled modes
 <input type="number" id="maxEnabledModes" />
 <br><br>
-<button onclick="generate()">generate patch</button>
 
+<script src="settings.js" type="text/javascript"></script>
 
-
-
-<script>
-let generate = function() {
-	let packmule = document.getElementById("packmule").checked;
-	let boost = document.getElementById("boost").checked;
-	let filledMouth = document.getElementById("filledMouth").checked;
-	let stickyGround = document.getElementById("stickyGround").checked;
-	let extendedFlutter = document.getElementById("extendedFlutter").checked;
-	let deathStarCounter = document.getElementById("deathStarCounter").checked;
-	let hardMode = document.getElementById("hardMode").checked;
-	let drunkMode = document.getElementById("drunkMode").checked;
-
-	let noTongue = document.getElementById("noTongue").checked;
-	let noFlutter = document.getElementById("noFlutter").checked;
-	let bouncyCastle = document.getElementById("bouncyCastle").checked;
-	let randomCursor = document.getElementById("randomCursor").checked;
-	let reverseControl = document.getElementById("reverseControl").checked;
-	let turbo = document.getElementById("turbo").checked;
-	let powerfulYoshi = document.getElementById("powerfulYoshi").checked;
-
-	let poisonCoins = document.getElementById("poisonCoins").checked;
-
-	let modes = [
-	packmule, boost, filledMouth, stickyGround,
-	extendedFlutter, deathStarCounter, hardMode,
-	drunkMode, noTongue, noFlutter, bouncyCastle,
-	randomCursor, reverseControl, turbo,
-	powerfulYoshi, poisonCoins
-	];
-
-	let maxModesInputVal = parseInt(document.getElementById("maxEnabledModes").value);
-	let maxEnabledModes = maxModesInputVal !== NaN ? maxModesInputVal : 100;
-
-	let levelModeFilter = {};
-
-	// Here is an example of how to use the level filter to filter modes 0-7 on 1-8
-	// levelModeFilter['1-8'] = [0, 1, 2, 3, 4, 5, 6, 7];
-
-	let randomBinary = function() {
-		return Math.floor(Math.random() * 2);
-	}
-
-	let randomInteger = function(max) {
-		return Math.floor(Math.random() * (max + 1));
-	}
-
-	let enableMode = function(isModeEnabled) {
-		return isModeEnabled ? randomBinary() : 0;
-	}
-
-	let generateModeBits = function(level) {
-		let modeString = '0000000000000000';
-		let modeIndexes = [];
-		modes.forEach(function(mode, index) {
-			modeIndexes.push(index)
-		});
-		// LOL terrible programming
-		let maxModeCounter = maxEnabledModes ? maxEnabledModes : 100000;
-
-		for(let i = 0; i < modes.length; i++) {
-			let currentMode;
-			while(modeIndexes.indexOf(currentMode) === -1) {
-				currentMode = randomInteger(modes.length - 1);
-			}
-			let modeEnabled = true;
-			if(levelModeFilter.hasOwnProperty(level)) {
-				modeEnabled = levelModeFilter[level].indexOf(currentMode) === -1;
-			}
-			let modeSetting = maxModeCounter && modeEnabled ? enableMode(modes[currentMode]) : 0;
-			modeString = modeString.substr(0, currentMode) + modeSetting + modeString.substr(currentMode+1);
-			if(modeSetting === 1) {
-				maxModeCounter --;
-			}
-		}
-
-		modeString = modeString.slice(0, 8) + '\n' + modeString.slice(8);
-		modeString += '\n';
-
-		// Since there are still many mode bits undefined, make them all 0 for now
-
-		for(let i = 0; i < 6; i++) {
-			modeString += '00000000\n';
-		}
-
-		return modeString;
-	}
-
-	// Generate table of which modes to use for each level
-
-	let modePatch = 'custom_mode_settings:\n';
-
-	for(let i = 0; i < 6; i++) {
-		for(let j = 0; j < 8; j++) {
-			let level = (i + 1) + '-' + (j + 1);
-			modePatch += '; level ' + level + '\n';
-			modePatch += generateModeBits(level);
-			// If we are on the last level, generate dummy values for last three tiles
-			if(j === 7) {
-				modePatch += '; dummy values for remaining world tiles\n';
-				for(let arne = 0; arne < 24; arne++) {
-				modePatch += 'db %00000000\n';				
-				}
-			}
-		}
-	};
-
-	console.log(modePatch);
-}
-</script>
 
 </body>
 </html>
