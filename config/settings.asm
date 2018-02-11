@@ -19,8 +19,6 @@ org $238000
 
 !melon_type = $150A
 
-
-
 !active_modes_amount = $1800
 !active_modes_pointers = $1802
 
@@ -51,10 +49,10 @@ modes_pointers:
     dw turbo_mode                      ; 12
     dw reverse_control_mode            ; 14
     dw random_cursor                   ; 16
-    dw bouncy_castle                   ; 18
+    dw bouncy_castle                   ; 18 problem
     dw tongue_everything               ; 1A
     dw no_flutter                      ; 1C
-    dw no_tongue                       ; 1E
+    dw no_tongue                       ; 1E Ugly
     dw floor_is_lava                   ; 20
     dw enable_poison_coin              ; 22
     dw enable_poison_flower            ; 24
@@ -82,7 +80,7 @@ custom_level_order:
     ; levels 1-E & bonus
     db $08, $09
     ; score and controller settings (these never matter)
-    db $00, $00
+    db $00, $0B
     ; World 2
     ; levels 2-1 -> 2-8
     db $0C, $0D, $0E, $0F, $10, $11, $12, $13
@@ -126,7 +124,10 @@ custom_level_order:
 ; This refers to World Map Level
 custom_mode_settings:
 ; level 1-1
-db $02, $08
+db $20
+dw $0001
+db $06
+; dw $000c
 dw !level_mode_settings_endmarker
 ; level 1-2
 dw !level_mode_settings_endmarker

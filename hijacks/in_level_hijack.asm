@@ -21,16 +21,15 @@ in_level_hijack:
     ; SEP #$20
     ; LDA custom_mode_settings,x
 print pc
-.execute_modes
     LDX !active_modes_amount
-.loop
+.execute_modes
     BEQ .ret
     PHX
     JSR (!active_modes_pointers-2,x)
     PLX
     DEX
     DEX
-    BRA .loop
+    BRA .execute_modes
 
 
 .ret

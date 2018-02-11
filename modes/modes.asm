@@ -266,6 +266,7 @@ no_tongue:
 
 ;=================================
 ; !lava_time_amount = #$0000
+; TODO: Rewrite? Messy implementation
 
 floor_is_lava:
     REP #$30
@@ -289,6 +290,11 @@ floor_is_lava:
     BRA .reset_timer
 .decrease
     DEC $03B6
+    DEC $03B6
+    DEC $03B6
+    DEC $03B6
+    BPL .reset_timer
+    STZ $03B6
 .reset_timer
     LDA !lava_time_amount
     STA !floor_timer
@@ -297,13 +303,13 @@ floor_is_lava:
     RTS
 
 enable_poison_coin:
-    LDA #$0001
+    LDA #$01
     STA !do_poison_coins
 .ret
     RTS
 
 enable_poison_flower:
-    LDA #$0001
+    LDA #$01
     STA !do_poison_flowers
 .ret
     RTS

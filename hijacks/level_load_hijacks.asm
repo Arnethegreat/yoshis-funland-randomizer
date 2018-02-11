@@ -25,7 +25,6 @@ freecode $FF
 
 ;=================================
 
-print pc
 ; 8-bit A/X/Y
 prepare_level_settings:
     PHX
@@ -113,6 +112,30 @@ restore_world:
 
 get_level_settings:
     REP #$30                       ; 16-bit index registers
+
+.clear
+    STZ !active_modes_amount
+; not necessary but prob good idea
+    STZ !floor_timer
+    STZ !do_poison_coins
+    STZ !do_poison_flowers
+    STZ !poison_coins_amount
+    STZ !poison_flowers_amount
+    STZ !boost_amount
+    STZ !boost_amount_neg
+    STZ !max_speed
+    STZ !max_speed_neg
+    STZ !lava_time_amount
+    STZ !melon_type
+
+    LDX #$00FE
+; clear out all previous pointers
+..loop
+    STZ !active_modes_pointers,x
+    DEX
+    DEX
+    BNE ..loop
+
     LDX #$0000                     ; Settings Index
     LDY #$0000                     ; Level Counter
 .find_index
@@ -138,15 +161,19 @@ get_level_settings:
     LDA modes_pointers,x
 
     PLX
+
     PHA
+    LDA custom_mode_settings,x
+    AND #$00FF
     JSR parse_parameters
     PLA
+
     LDY !active_modes_amount
     STA !active_modes_pointers,y
     INY
     INY
     STY !active_modes_amount
-    INX
+
     BRA .unpack
 .ret
     RTS
@@ -155,6 +182,8 @@ get_level_settings:
 ; Takes in argument in A
 ; Increase X by parameter length
 ; Checks mode index to find if it takes parameters and load them
+print "parameters unpack"
+print pc
 parse_parameters:
     CMP #$000C
     BEQ .filled_mouth
@@ -167,6 +196,7 @@ parse_parameters:
     CMP #$0024
     BEQ .poison_flower
 
+    INX
     RTS
 
 .filled_mouth
@@ -205,6 +235,7 @@ parse_parameters:
     RTS
 
 .lava_floor
+; 2-bytes
     INX
     LDA custom_mode_settings,x
     STA !boost_amount
@@ -214,6 +245,7 @@ parse_parameters:
     RTS
 
 .poison_coin
+; 2-bytes
     INX
     LDA custom_mode_settings,x
     STA !poison_coins_amount
@@ -223,6 +255,7 @@ parse_parameters:
     RTS
 
 .poison_flower
+; 2-bytes
     INX
     LDA custom_mode_settings,x
     STA !poison_flowers_amount

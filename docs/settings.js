@@ -200,7 +200,7 @@ xhr.onload = function (e) {
     if (this.status == 200) {
         // get binary data as a response
         patched_rom_blob = this.response;
-        console.log(patched_rom_blob)
+        // console.log(patched_rom_blob)
     }
 }
 
