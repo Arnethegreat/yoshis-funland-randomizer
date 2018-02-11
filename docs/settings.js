@@ -192,16 +192,21 @@ function saveAs(blob, fileName) {
 
 
 var xhr = new XMLHttpRequest();
-xhr.open('GET', 'build.sfc', true);
+xhr.open('GET', 'https://arnethegreat.github.io/yoshis-funland-randomizer/build.sfc', true);
 xhr.responseType = 'blob';
+var patched_rom_blob
 
 xhr.onload = function (e) {
     if (this.status == 200) {
         // get binary data as a response
-        var blob = this.response;
+        patched_rom_blob = this.response;
+        console.log(patched_rom_blob)
     }
-};
+}
+
 
 xhr.send();
 
 console.log("Hello Kiwi")
+
+console.log(patched_rom_blob)

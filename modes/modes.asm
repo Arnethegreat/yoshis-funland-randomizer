@@ -1,21 +1,23 @@
 !yoshi_x_speed = $60B4
-
-;=================================
-
 !drunk_mode_timer = $7FE8
+;=================================
+mode_return:
+    NOP
+.ret
+    RTS
 
 drunk_mode:
     LDA $0118
     SEC
     SBC #$0F
-    ORA $60AC
+    ORA !s_player_state
     BNE .no_drunk
     LDA #$01
     BRA .ret
 .no_drunk
     LDA #$00
 .ret
-    STA !drunk_mode_timer
+    STA !s_fuzzy_timer
     RTS
 
 ;=================================
@@ -24,7 +26,7 @@ hard_mode:
     LDA $61B3 ; baby mario state
     CMP #$80
     BEQ .ret
-    LDA $60AC
+    LDA !s_player_state
     BNE .ret
     LDA #$01
     STA $03B6
@@ -39,7 +41,7 @@ death_star_counter:
     LDA $03B6
     CMP #$0002 
     BCS .ret
-    LDA $60AC
+    LDA !s_player_state
     BNE .ret
 ; carry out death if star counter = 0 or 1
     LDA #$0028 ; lava death
@@ -62,26 +64,27 @@ extended_flutter:
 ;=================================
 
 sticky_ground:
-    LDA $60AC
+    LDA !s_player_state
     ORA $60AE
     BNE .ret
     REP #$20
     LDA $60C0
     BNE .ret
-    LDA !yoshi_x_speed
+    LDA !s_player_x_speed 
     CMP #$0021
     BCC .ret
     CMP #$FFD0
     BCS .ret
     LDA #$0000
-    STA !yoshi_x_speed
+    STA !s_player_x_speed 
 .ret
     SEP #$20
     RTS
 
 ;=================================
 ; add fire and ice melon support
-!melon_type = #$02
+; !melon_type = #$02
+
 filled_mouth:
     LDA !melon_type
     STA $616A
@@ -111,43 +114,13 @@ boost_mode:
     CLC
     ADC boost_amount_table,x
 .no_add
-    STA !yoshi_x_speed
+    STA !s_player_x_speed
     SEP #$30
 
 .ret
     RTS
 
 ;=================================
-
-; packmule_mode:
-;     LDX $7DF6 ; egg count
-;     BEQ .ret
-;     LDA $60AE
-;     BNE .ret
-;     TXY
-;     REP #$20
-;     LDA !yoshi_x_speed
-;     BPL .pos
-; .neg
-;     EOR #$FFFF
-;     INC A
-;     PHA
-;     TXA
-;     CLC
-;     ADC #$000C
-;     TAY
-;     PLA
-
-; .pos
-;     CMP packmule_speed_table,x
-;     BCC .ret
-;     TYX
-;     LDA packmule_speed_table,x
-;     ; SBC #$0016
-;     STA !yoshi_x_speed
-; .ret
-;     SEP #$30
-;     RTS
 
 
 ;=================================
@@ -189,7 +162,7 @@ turbo_mode:
 ;=================================
 
 reverse_control_mode:
-    LDA $60AC
+    LDA !s_player_state
     BNE .ret
     LDA #$04
     STA $61EC
@@ -211,10 +184,10 @@ reverse_control_mode:
 random_cursor:
     JSL $008408
     REP #$20
-    LDA $7970
+    LDA !s_rng
     XBA
     AND #$7FFF
-    STA $60EE
+    STA !s_egg_cursor_angle
 
 .ret
     SEP #$20
@@ -225,16 +198,16 @@ random_cursor:
 
 bouncy_castle:
     REP #$30
-    LDA $60AC
+    LDA !s_player_state
     BNE .ret
-    LDA $60FC
+    LDA !s_player_tile_collision
     AND #$0007
-    ORA $61B4
+    ORA !s_on_sprite_platform_flag
     BEQ .ret
-    STZ $61B4
+    STZ !s_on_sprite_platform_flag
     LDA #$0013    
     JSL $0085D2 ; play boing sound 
-    STZ $60D4
+    STZ !s_player_ground_pound_state
     LDA #$FB00
     STA $60AA
     LDA #$0006
@@ -292,15 +265,15 @@ no_tongue:
     RTS
 
 ;=================================
-!lava_time_amount = #$0000
+; !lava_time_amount = #$0000
 
 floor_is_lava:
     REP #$30
-    LDA $60AC
+    LDA !s_player_state
     BNE .ret
-    LDA $60FC
+    LDA !s_player_tile_collision
     AND #$0007
-    ORA $61B4
+    ORA !s_on_sprite_platform_flag
     BEQ .ret
 
     LDA !floor_timer

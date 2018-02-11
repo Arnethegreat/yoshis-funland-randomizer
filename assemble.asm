@@ -1,3 +1,7 @@
+incsrc vars/ram_vars.asm
+incsrc vars/reg_vars.asm
+incsrc vars/sram_vars.asm
+
 incsrc config/settings.asm
 
 incsrc hijacks/in_level_hijack.asm

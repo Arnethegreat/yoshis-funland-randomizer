@@ -8,7 +8,7 @@ poison_coins:
     LDA !do_poison_coins
     BEQ .ret
 
-    LDA !coin_poison_amount
+    LDA !poison_coins_amount
     CLC
     ADC $03B6
     BMI .neg
@@ -30,7 +30,7 @@ poison_flowers:
     LDA !do_poison_flowers
     BEQ .ret
 
-    LDA !flower_poison_amount
+    LDA !poison_flowers_amount
     CLC
     ADC $03B6
     BMI .neg
