@@ -1,7 +1,7 @@
 !yoshi_x_speed = $60B4
 !drunk_mode_timer = $7FE8
 ;=================================
-mode_return:
+require_score:
     NOP
 .ret
     RTS
@@ -104,15 +104,15 @@ boost_mode:
     LDX $60C4 ; facing direction
     LDA $60A8 ; last frame speed
     BPL .pos
-    CMP max_speed_table+2
+    CMP !max_speed_neg
     BCC .no_add
     BRA .add
 .pos
-    CMP max_speed_table
+    CMP !max_speed
     BCS .no_add
 .add
     CLC
-    ADC boost_amount_table,x
+    ADC !boost_amount,x
 .no_add
     STA !s_player_x_speed
     SEP #$30
@@ -129,6 +129,7 @@ boost_mode:
 ;=================================
 
 placeholder_1:
+    
 
 .ret
     RTS
@@ -269,7 +270,7 @@ no_tongue:
 ; TODO: Rewrite? Messy implementation
 
 floor_is_lava:
-    REP #$30
+    REP #$20
     LDA !s_player_state
     BNE .ret
     LDA !s_player_tile_collision
@@ -289,10 +290,16 @@ floor_is_lava:
     STZ $03B6
     BRA .reset_timer
 .decrease
-    DEC $03B6
-    DEC $03B6
-    DEC $03B6
-    DEC $03B6
+    SEC
+    SBC !lava_damage_amount
+    STA $03B6
+
+    PHA
+    PHY
+    JSR test_spawn      ; test
+    PLY
+    PLA
+
     BPL .reset_timer
     STZ $03B6
 .reset_timer
@@ -311,5 +318,40 @@ enable_poison_coin:
 enable_poison_flower:
     LDA #$01
     STA !do_poison_flowers
+.ret
+    RTS
+
+test_spawn:
+    LDA #$01E0                                ; $02ABB7 |
+    JSL $008B21                               ; $02ABBA |
+    LDA !s_player_x                           ; $02ABBE |
+    ; CLC                                       ; $02ABC1 |
+    ; ADC #$0006                                ; $02ABC2 |
+    STA $70A2,y                               ; $02ABC5 |
+    LDA !s_player_y                           ; $02ABC8 |
+    CLC                                       ; $02ABCB |
+    ADC #$0018                                ; $02ABCC |
+    STA $7142,y                               ; $02ABCF |
+    LDA #$0004                                ; $0DC246 |\
+    STA $7782,y                               ; $0DC249 |/ Animation duration
+    STA $7E4C,y                               ; $0DC24C |
+
+    LDA $60F4
+    BPL +
+    LDA #$0080
+    BRA .store
++
+    LDA #$FF80
+.store
+    STA $71E0,y                               ; $0DC251 |/  Set ambient sprite x-speed
+    LDA #$0030                                ; $0DC254 |\
+    STA $71E2,y                               ; $0DC257 |/  Ambient sprite y-speed
+    LDA $60F4                                 ; $0DC25A |\
+    EOR #$0002                                ; $0DC25D | | Set ambient sprite direction same as tap-tap
+    STA $73C0,y                               ; $0DC260 |/
+    LDY #$04                                  ; $0DC263 |
+    LDA #$0006                                ; $0DC265 | animation frame
+    LDA #$0017                                ; $0DC2CF |\ play sound #$002E
+    JSL $0085D2                               ; $0DC2D2 |/
 .ret
     RTS

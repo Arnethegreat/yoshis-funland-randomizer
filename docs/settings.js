@@ -54,6 +54,11 @@ let getSettings = function() {
     randomCursor, reverseControl, turbo,
     powerfulYoshi, poisonCoins
     ];
+
+    normalLevels = []
+    fortressLevels = []
+    castleLevels = []
+    autoscrollers = []
 }
 
 let maxModesInputVal = parseInt(document.getElementById("maxEnabledModes").value);

@@ -183,8 +183,10 @@ get_level_settings:
 ; Increase X by parameter length
 ; Checks mode index to find if it takes parameters and load them
 print "parameters unpack"
-print pc
+; print pc
 parse_parameters:
+    INX
+
     CMP #$000C
     BEQ .filled_mouth
     CMP #$000E
@@ -196,12 +198,10 @@ parse_parameters:
     CMP #$0024
     BEQ .poison_flower
 
-    INX
     RTS
 
 .filled_mouth
 ; 1-byte
-    INX
     LDA custom_mode_settings,x
     AND #$00FF
     STA !melon_type 
@@ -210,7 +210,6 @@ parse_parameters:
 
 .boost
 ; 4-bytes
-    INX
     LDA custom_mode_settings,x
     STA !boost_amount
 ; dumb quick hack dont judge
@@ -235,10 +234,13 @@ parse_parameters:
     RTS
 
 .lava_floor
-; 2-bytes
-    INX
+; 4-bytes
     LDA custom_mode_settings,x
     STA !boost_amount
+    INX
+    INX
+    LDA custom_mode_settings,x
+    STA !lava_damage_amount
     INX
     INX
 
@@ -246,7 +248,6 @@ parse_parameters:
 
 .poison_coin
 ; 2-bytes
-    INX
     LDA custom_mode_settings,x
     STA !poison_coins_amount
     INX
@@ -256,7 +257,6 @@ parse_parameters:
 
 .poison_flower
 ; 2-bytes
-    INX
     LDA custom_mode_settings,x
     STA !poison_flowers_amount
     INX

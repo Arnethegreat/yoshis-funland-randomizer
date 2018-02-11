@@ -20,7 +20,7 @@ in_level_hijack:
     ; TAX
     ; SEP #$20
     ; LDA custom_mode_settings,x
-print pc
+; print pc
     LDX !active_modes_amount
 .execute_modes
     BEQ .ret

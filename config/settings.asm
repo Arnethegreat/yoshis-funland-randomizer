@@ -16,8 +16,10 @@ org $238000
 !max_speed_neg = $150E
 
 !lava_time_amount = $1508
+!lava_damage_amount = $150A
 
-!melon_type = $150A
+!melon_type = $150C
+
 
 !active_modes_amount = $1800
 !active_modes_pointers = $1802
@@ -37,20 +39,20 @@ org $238000
 !level_mode_settings_endmarker = #$8089
 
 modes_pointers:
-    dw mode_return                     ; 00
+    dw require_score                   ; 00 (2-bytes)
     dw drunk_mode                      ; 02
     dw hard_mode                       ; 04
     dw death_star_counter              ; 06
     dw extended_flutter                ; 08
     dw sticky_ground                   ; 0A
-    dw filled_mouth                    ; 0C
-    dw boost_mode                      ; 0E
-    dw god_mode                        ; 10
-    dw turbo_mode                      ; 12
+    dw filled_mouth                    ; 0C (1-byte)
+    dw boost_mode                      ; 0E (4-bytes)
+    dw god_mode                        ; 10 Remove?
+    dw turbo_mode                      ; 12 Remove
     dw reverse_control_mode            ; 14
     dw random_cursor                   ; 16
     dw bouncy_castle                   ; 18 problem
-    dw tongue_everything               ; 1A
+    dw tongue_everything               ; 1A needs blacklist
     dw no_flutter                      ; 1C
     dw no_tongue                       ; 1E Ugly
     dw floor_is_lava                   ; 20
@@ -60,16 +62,18 @@ modes_pointers:
 
 ;=================================
 
-boost_amount_table:
-    dw !boost_amount
-    dw $0000-!boost_amount
+; boost_amount_table:
+;     dw !boost_amount
+;     dw $0000-!boost_amount
 
-max_speed_table:
-    dw !max_speed
-    dw $0000-!max_speed
+; max_speed_table:
+;     dw !max_speed
+;     dw $0000-!max_speed
 ;=================================
 ;=================================
 ;=================================
+print "Do custom levels pointer:"
+print pc
 do_custom_level_order:
     db $01
 
@@ -122,11 +126,16 @@ custom_level_order:
 ; some modes take parameters, see modes_pointers
 ; each level setting is ended by a word (!level_mode_settings_endmarker)
 ; This refers to World Map Level
+print "custom mode settings pointer:"
+print pc
+
 custom_mode_settings:
 ; level 1-1
 db $20
-dw $0001
+dw $0008, $000C
 db $06
+db $22
+dw $0010
 ; dw $000c
 dw !level_mode_settings_endmarker
 ; level 1-2
