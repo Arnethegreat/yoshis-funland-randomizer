@@ -20,6 +20,8 @@ org $238000
 
 !melon_type = $150C
 
+!bouncy_allowed = $150E
+
 
 !active_modes_amount = $1800
 !active_modes_pointers = $1802
@@ -54,7 +56,7 @@ modes_pointers:
     dw bouncy_castle                   ; 18 problem
     dw tongue_everything               ; 1A needs blacklist
     dw no_flutter                      ; 1C
-    dw no_tongue                       ; 1E Ugly
+    dw no_tongue                       ; 1E gay
     dw floor_is_lava                   ; 20
     dw enable_poison_coin              ; 22
     dw enable_poison_flower            ; 24
@@ -131,12 +133,6 @@ print pc
 
 custom_mode_settings:
 ; level 1-1
-db $20
-dw $0008, $000C
-db $06
-db $22
-dw $0010
-; dw $000c
 dw !level_mode_settings_endmarker
 ; level 1-2
 dw !level_mode_settings_endmarker

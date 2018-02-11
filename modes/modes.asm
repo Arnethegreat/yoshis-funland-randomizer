@@ -205,6 +205,10 @@ bouncy_castle:
     AND #$0007
     ORA !s_on_sprite_platform_flag
     BEQ .ret
+
+    LDA !bouncy_allowed
+    BEQ .toggle_bounce
+
     STZ !s_on_sprite_platform_flag
     LDA #$0013    
     JSL $0085D2 ; play boing sound 
@@ -217,6 +221,10 @@ bouncy_castle:
     STA $60D2
 
     ; JSL $03B20B ; geboingboing
+.toggle_bounce
+    LDA !bouncy_allowed
+    EOR #$0001
+    STA !bouncy_allowed
 
 .ret
     SEP #$30
