@@ -116,8 +116,10 @@ get_level_settings:
     REP #$30                       ; 16-bit index registers
 
 .clear
-    STZ !active_modes_amount
-; not necessary but prob good idea
+    STZ !temp_01
+    STZ !temp_02
+    STZ !temp_03
+
     STZ !floor_timer
     STZ !do_poison_coins
     STZ !do_poison_flowers
@@ -128,8 +130,12 @@ get_level_settings:
     STZ !max_speed
     STZ !max_speed_neg
     STZ !lava_time_amount
+    STZ !lava_damage_amount
     STZ !melon_type
+    STZ !bouncy_allowed 
+    STZ !required_score
 
+    STZ !active_modes_amount    
     LDX #$00FE
 ; clear out all previous pointers
 ..loop
@@ -137,6 +143,7 @@ get_level_settings:
     DEX
     DEX
     BNE ..loop
+
 
     LDX #$0000                     ; Settings Index
     LDY #$0000                     ; Level Counter
@@ -187,6 +194,8 @@ get_level_settings:
 parse_parameters:
     INX
 
+    CMP #$0000
+    BEQ .require_score
     CMP #$000C
     BEQ .filled_mouth
     CMP #$000E
@@ -198,6 +207,13 @@ parse_parameters:
     CMP #$0024
     BEQ .poison_flower
 
+    RTS
+
+.require_score
+    LDA custom_mode_settings,x
+    AND #$00FF
+    STA !required_score
+    INX
     RTS
 
 .filled_mouth

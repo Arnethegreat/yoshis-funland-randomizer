@@ -25,6 +25,7 @@ poison_coins:
     LDA $037B
     RTL
 
+;=================================
 
 poison_flowers:
     LDA !do_poison_flowers
@@ -46,3 +47,75 @@ poison_flowers:
     INC $03B8
     LDY $03B8
     RTL
+
+;=================================
+
+goal_ring_check:
+    PHX
+    PHY
+    JSR calculate_score
+    PLY
+    PLX
+
+    CMP !required_score
+    BCC .hack_out
+    BRA .ret
+
+.hack_out
+; Incorrect sound
+    LDA #$0090
+    JSL $0085D2
+; call damage player routine
+    JSL $03A853
+
+; Go back to RTS as fail 
+    JML $02A915
+
+; required score met
+.ret
+    LDA !s_player_y                           ; $02A91B |
+    SEC                                       ; $02A91E |
+    JML $02A91F
+
+
+calculate_score:
+    LDA !r_stars_amount
+    CMP #$012D
+    BCC +
+    LDA #$012C
++
+; divided by 10
+    STA $4204
+    LDX #$0A
+    STX $4206
+    NOP #8
+    LDA #$0000
+    CLC
+    ADC $4214
+    STA !temp_01
+
+    LDA !r_flowers_amount
+    CMP #$0006
+    BCC +
+    LDA #$0005
+    STA !r_flowers_amount
++
+; times 10...
+    ASL A
+    ASL A
+    ASL A
+    CLC
+    ADC !r_flowers_amount
+    CLC
+    ADC !r_flowers_amount
+
+    CLC
+    ADC !temp_01
+    STA !temp_01
+
+    CLC
+    ADC !r_red_coins_amount
+    STA !temp_01
+
+.ret
+    RTS

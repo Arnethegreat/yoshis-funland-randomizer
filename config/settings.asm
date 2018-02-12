@@ -1,7 +1,12 @@
 org $238000
 ; vars
+!temp_01 = $140A
+!temp_02 = $140C
+!temp_03 = $140E
+
 !original_level = $1410
 !original_world = $1412
+
 !floor_timer = $1440
 
 !do_poison_coins = $1500
@@ -21,6 +26,8 @@ org $238000
 !melon_type = $1514
 
 !bouncy_allowed = $1516
+
+!required_score = $1518
 
 
 !active_modes_amount = $1800

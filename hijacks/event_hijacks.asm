@@ -10,3 +10,9 @@ org $0EB4BC
     nop
     nop
     autoclean JSL poison_flowers
+
+; goal ring check if mario bab is valid
+org $02A91B
+    autoclean JML goal_ring_check
+    
+
