@@ -199,23 +199,35 @@ function saveAs(blob, fileName) {
     // saveAs(blob2, fileName2);
 })();
 
+var LEVEL_SETTINGS = 0x118026;
+var LEVEL_OFFSETS = [
+//   1   2   3   4   5   6   7   8  //  E   B
+     1,  2,  3,  4,  5,  6,  7,  8, //  9, 10, // World 1
+    13, 14, 15, 16, 17, 18, 19, 20, // 21, 22, // World 2
+    25, 26, 27, 28, 29, 30, 31, 32, // 33, 34, // World 3
+    37, 38, 39, 40, 41, 42, 43, 44, // 45, 46, // World 4
+    49, 50, 51, 52, 53, 54, 55, 56, // 57, 58, // World 5
+    61, 62, 63, 64, 65, 66, 67, 68, // 69, 70  // World 6
+];
 
-var xhr = new XMLHttpRequest();
-xhr.open('GET', 'https://arnethegreat.github.io/yoshis-funland-randomizer/build.sfc', true);
-xhr.responseType = 'blob';
-var patched_rom_blob
+function generateRom() {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'build.sfc', true);
+    xhr.responseType = 'arraybuffer';
 
-xhr.onload = function (e) {
-    if (this.status == 200) {
-        // get binary data as a response
-        patched_rom_blob = this.response;
-        // console.log(patched_rom_blob)
+    xhr.onload = function (e) {
+        if (this.status == 200) {
+            var buffer = xhr.response;
+            var rom = new Uint8Array(buffer);
+            var levelOrder = generateLevelOrder();
+
+            levelOrder.forEach(function(level, i) {
+                rom[LEVEL_SETTINGS + LEVEL_OFFSETS[i]] = level;
+            });
+
+            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'yoshfun.sfc');
+        }
     }
+
+    xhr.send();
 }
-
-
-xhr.send();
-
-console.log("Hello Kiwi")
-
-console.log(patched_rom_blob)
