@@ -26,6 +26,10 @@ let modes = [
     powerfulYoshi, poisonCoins
     ];
 
+var normalLevels;
+var fortressLevels;
+var castleLevels;
+var autoscrollers;
 
 let getSettings = function() {
     boost = document.getElementById("boost").checked;
