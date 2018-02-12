@@ -61,9 +61,9 @@ modes_pointers:
     dw reverse_control_mode            ; 14
     dw random_cursor                   ; 16
     dw bouncy_castle                   ; 18
-    dw tongue_everything               ; 1A needs blacklist
+    dw placeholder_1                   ; 1A 
     dw no_flutter                      ; 1C
-    dw no_tongue                       ; 1E gay
+    dw tongue_nothing                  ; 1E 
     dw floor_is_lava                   ; 20
     dw enable_poison_coin              ; 22
     dw enable_poison_flower            ; 24

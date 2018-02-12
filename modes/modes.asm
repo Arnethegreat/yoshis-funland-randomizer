@@ -200,17 +200,16 @@ bouncy_castle:
     RTS
 
 ;=================================
-; TODO: add blacklist of sprites
-; eggs, entrances
 
-tongue_everything:
+
+tongue_nothing:
     LDX #$5C
 .loop
     LDA $6F00,x
     BEQ .ret
     LDA $6FA0,x
-    AND #%00111111
-    ; ORA #%00000000
+    ; AND #%00111111
+    ORA #%10000000
     STA $6FA0,x
     DEX
     DEX
@@ -229,16 +228,10 @@ no_flutter:
 
 ;=================================
 ; puffy cheeks 
-; 
+; disabled
 
 no_tongue:
-    LDA #$80
-    STZ $6150
-    STZ $6151
-    STA $6162
-    STA $6163
-    STZ $6168
-    STZ $6169
+
 .ret
     RTS
 
