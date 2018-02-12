@@ -89,6 +89,8 @@ fix_start_select:
     LDX $021A
     LDA do_custom_level_order
     BEQ .ret
+    CMP #$0B
+    BNE .ret
     LDX !original_level
 .ret
     LDA $0222,x 
@@ -182,8 +184,6 @@ get_level_settings:
 ; Takes in argument in A
 ; Increase X by parameter length
 ; Checks mode index to find if it takes parameters and load them
-print "parameters unpack"
-; print pc
 parse_parameters:
     INX
 

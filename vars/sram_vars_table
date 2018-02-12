@@ -1,0 +1,25 @@
+!s_oam_buffer = $6200
+!s_oam_buffer_l = $700200
+
+!s_oam_lo_table_mirror = $6A00
+!s_oam_lo_table_mirror_l = $700A00
+
+!s_oam_hi_table_mirror = $6C00
+!s_oam_hi_table_mirror_l = $700C00
+
+!s_oam_hi_table_buffer = $6C20
+!s_oam_hi_table_buffer_l = $700C20
+
+!s_screen_num_to_id = $6CAA
+!s_screen_num_to_id_l = $700CAA
+
+!s_cur_egg_inv_slots = $7DF8
+!s_cur_egg_inv_slots_l = $701DF8
+
+!s_opt_x_offsets = $7EF2
+!s_opt_x_offsets_l = $701EF2
+
+!s_opt_y_offsets = $7F32
+!s_opt_y_offsets_l = $701F32
+
+!s_cgram_mirror = $702000

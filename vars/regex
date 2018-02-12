@@ -1,0 +1,17 @@
+([A-Z]) *(\$30                       )
+([A-Z]) *(\!r_frame_counter_global_dp)
+$1 !r_frame_counter_global
+
+!r_frame_counter_global_dp = $30
+
+
+(\S+)( =+ \$)(\d\d)(\d\d)
+$1$2$3$4\n$1_dp$2$4\n$1_l\27E$3$4
+
+(\S+)( =+ )(.+)
+
+
+match indexed 
+([A-Z]) *(\$[A-F0-9]+)(,)([xys])
+replace:
+$1 !the_define$3$4

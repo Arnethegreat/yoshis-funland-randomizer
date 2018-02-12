@@ -15,12 +15,12 @@ org $238000
 !max_speed = $150C
 !max_speed_neg = $150E
 
-!lava_time_amount = $1508
-!lava_damage_amount = $150A
+!lava_time_amount = $1510
+!lava_damage_amount = $1512
 
-!melon_type = $150C
+!melon_type = $1514
 
-!bouncy_allowed = $150E
+!bouncy_allowed = $1516
 
 
 !active_modes_amount = $1800
@@ -41,7 +41,7 @@ org $238000
 !level_mode_settings_endmarker = #$8089
 
 modes_pointers:
-    dw require_score                   ; 00 (2-bytes)
+    dw require_score                   ; 00 (1-byte)
     dw drunk_mode                      ; 02
     dw hard_mode                       ; 04
     dw death_star_counter              ; 06
@@ -49,11 +49,11 @@ modes_pointers:
     dw sticky_ground                   ; 0A
     dw filled_mouth                    ; 0C (1-byte)
     dw boost_mode                      ; 0E (4-bytes)
-    dw god_mode                        ; 10 Remove?
-    dw turbo_mode                      ; 12 Remove
+    dw placeholder_1                   ; 10 
+    dw placeholder_1                   ; 12 
     dw reverse_control_mode            ; 14
     dw random_cursor                   ; 16
-    dw bouncy_castle                   ; 18 problem
+    dw bouncy_castle                   ; 18
     dw tongue_everything               ; 1A needs blacklist
     dw no_flutter                      ; 1C
     dw no_tongue                       ; 1E gay
@@ -63,14 +63,6 @@ modes_pointers:
 
 
 ;=================================
-
-; boost_amount_table:
-;     dw !boost_amount
-;     dw $0000-!boost_amount
-
-; max_speed_table:
-;     dw !max_speed
-;     dw $0000-!max_speed
 ;=================================
 ;=================================
 ;=================================
@@ -86,7 +78,7 @@ custom_level_order:
     ; levels 1-E & bonus
     db $08, $09
     ; score and controller settings (these never matter)
-    db $00, $0B
+    db $00, $00
     ; World 2
     ; levels 2-1 -> 2-8
     db $0C, $0D, $0E, $0F, $10, $11, $12, $13

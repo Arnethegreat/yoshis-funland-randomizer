@@ -1,0 +1,39 @@
+!r_sound_queue = $0059
+!r_sound_queue_dp = $59
+!r_sound_queue_l = $7E0059
+
+!r_spc_blocks = $0207
+!r_spc_blocks_l = $7E0207
+
+!r_stages_unlocked = $0222
+!r_stages_unlocked_l = $7E0222
+
+!r_stage_scores = $02B8
+!r_stage_scores_l = $7E02B8
+
+!r_map_icon_gfx = $030F
+!r_map_icon_gfx_l = $7E030F
+
+!r_pause_items = $0357
+!r_pause_items_l = $7E0357
+
+!r_item_mem_page0 = $03C0
+!r_item_mem_page0_l = $7E03C0
+
+!r_item_mem_page1 = $0440
+!r_item_mem_page1_l = $7E0440
+
+!r_item_mem_page2 = $04C0
+!r_item_mem_page2_l = $7E04C0
+
+!r_item_mem_page3 = $0540
+!r_item_mem_page3_l = $7E0540
+
+!r_eggs_x_follow_buffer = $05C2
+!r_eggs_x_follow_buffer_l = $7E05C2
+
+!r_eggs_y_follow_buffer = $06EA
+!r_eggs_y_follow_buffer_l = $7E06EA
+
+!r_active_special_sprites = $0C04
+!r_active_special_sprites_l = $7E0C04

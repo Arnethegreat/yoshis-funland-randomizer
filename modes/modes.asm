@@ -84,7 +84,6 @@ sticky_ground:
 ;=================================
 ; add fire and ice melon support
 ; !melon_type = #$02
-
 filled_mouth:
     LDA !melon_type
     STA $616A
@@ -120,11 +119,6 @@ boost_mode:
 .ret
     RTS
 
-;=================================
-
-
-;=================================
-
 
 ;=================================
 
@@ -134,31 +128,6 @@ placeholder_1:
 .ret
     RTS
 
-
-;=================================
-; TODO: needs more testing
-; more god behavior
-; add fun effect to Yoshi 
-
-god_mode:
-    ; LDA $60AE
-    ; BNE .ret
-    ; LDA #$02
-    ; STA $7E04
-.ret
-    RTS
-
-;=================================
-
-turbo_mode:
-    REP #$20
-    LDA $0035
-    STA $0037
-    LDA $093C
-    STA $093E
-.ret
-    SEP #$20
-    RTS
 
 ;=================================
 
