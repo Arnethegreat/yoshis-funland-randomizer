@@ -214,7 +214,7 @@ function generateRom() {
                 randomizeLevelOrder(rom, options);
             }
 
-            //generateLevelSettings(rom, options);
+            generateLevelSettings(rom, options);
 
             // this is the "everything is unlocked in file 3" debug flag
             rom[0xB9897] = 0xEAEAEA;
@@ -231,18 +231,17 @@ function generateLevelSettings(rom, options) {
 
     LEVEL_OFFSETS.forEach(function(level, i) {
         if (i == 0) {
-            levelSettings.push(0x14);
+            levelSettings.push(0x08);
         }
 
         levelSettings = levelSettings.concat(LEVEL_SETTINGS_ENDMARKER);
 
+        // a bit of a hack but we need to account for the score and controller tiles at the end of the world maps
         if ((i + 1) % 10 == 0) {
             levelSettings = levelSettings.concat(LEVEL_SETTINGS_ENDMARKER);
             levelSettings = levelSettings.concat(LEVEL_SETTINGS_ENDMARKER);
         }
     });
-
-    console.log(levelSettings);
 
     rom.set(levelSettings, LEVEL_SETTINGS);
 }
