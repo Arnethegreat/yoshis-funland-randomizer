@@ -196,7 +196,7 @@ var LEVEL_OFFSETS = [
     61, 62, 63, 64, 65, 66, 67, 68, 69, 70  // World 6
 ];
 var LEVEL_SETTINGS = 0x11806F;
-var LEVEL_SETTINGS_ENDMARKER = [ 0x80, 0x89 ];
+var LEVEL_SETTINGS_ENDMARKER = [ 0x89, 0x80 ]; // this is reversed because of its endianness
 
 function generateRom() {
     var options = getOptions();
