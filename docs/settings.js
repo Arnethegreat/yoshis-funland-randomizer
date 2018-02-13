@@ -107,7 +107,7 @@ function randomizeLevelOrder(rom, options) {
     console.log(customLevelOrder)
 
     customLevelOrder.forEach(function(level, i) {
-        rom[LEVEL_SETTINGS + LEVEL_OFFSETS[i]] = level;
+        rom[WORLD_MAPS + LEVEL_OFFSETS[i]] = level;
     });
 }
 
@@ -185,7 +185,7 @@ function getOptions() {
     };
 }
 
-var LEVEL_SETTINGS = 0x118026;
+var WORLD_MAPS = 0x118026;
 var LEVEL_OFFSETS = [
 //   1   2   3   4   5   6   7   8   E   B
      1,  2,  3,  4,  5,  6,  7,  8,  9, 10, // World 1
