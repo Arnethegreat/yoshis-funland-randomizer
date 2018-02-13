@@ -216,7 +216,7 @@ function generateRom() {
 
             //generateLevelSettings(rom, options);
 
-            // this is the "L+R when selecting file 3 = everything is unlocked" debug flag
+            // this is the "everything is unlocked in file 3" debug flag
             rom[0xB9897] = 0xEAEAEA;
 
             saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'yoshfun.sfc');
