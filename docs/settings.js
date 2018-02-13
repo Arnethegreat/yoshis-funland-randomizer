@@ -195,6 +195,8 @@ var LEVEL_OFFSETS = [
     49, 50, 51, 52, 53, 54, 55, 56, 57, 58, // World 5
     61, 62, 63, 64, 65, 66, 67, 68, 69, 70  // World 6
 ];
+var LEVEL_SETTINGS = 0x11806F;
+var LEVEL_SETTINGS_ENDMARKER = [ 0x80, 0x89 ];
 
 function generateRom() {
     var options = getOptions();
@@ -212,12 +214,35 @@ function generateRom() {
                 randomizeLevelOrder(rom, options);
             }
 
-            // this is the L+R on file 3 debug flag
-            rom.set([ 0xEA, 0xEA, 0xEA ], 0xB9897);
+            //generateLevelSettings(rom, options);
+
+            // this is the "L+R when selecting file 3 = everything is unlocked" debug flag
+            rom[0xB9897] = 0xEAEAEA;
 
             saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'yoshfun.sfc');
         }
     }
 
     xhr.send();
+}
+
+function generateLevelSettings(rom, options) {
+    var levelSettings = [];
+
+    LEVEL_OFFSETS.forEach(function(level, i) {
+        if (i == 0) {
+            levelSettings.push(0x14);
+        }
+
+        levelSettings = levelSettings.concat(LEVEL_SETTINGS_ENDMARKER);
+
+        if ((i + 1) % 10 == 0) {
+            levelSettings = levelSettings.concat(LEVEL_SETTINGS_ENDMARKER);
+            levelSettings = levelSettings.concat(LEVEL_SETTINGS_ENDMARKER);
+        }
+    });
+
+    console.log(levelSettings);
+
+    rom.set(levelSettings, LEVEL_SETTINGS);
 }
