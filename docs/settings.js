@@ -231,7 +231,7 @@ function generateLevelSettings(rom, options) {
 
     LEVEL_OFFSETS.forEach(function(level, i) {
         
-        var globalMode = document.getElementById("selectMode");
+        var globalMode = document.getElementById("selectMode").value;
         levelSettings.push(globalMode);
         
 
