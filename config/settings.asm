@@ -7,6 +7,8 @@ org $238000
 !original_level = $1410
 !original_world = $1412
 
+!s_player_x_speed_megaprev = $1414
+
 !floor_timer = $1440
 !air_timer = $1442
 

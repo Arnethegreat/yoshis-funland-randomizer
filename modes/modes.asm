@@ -22,9 +22,90 @@ drunk_mode:
 
 ;=================================
 
+wallkick_x_speeds:
+    dw $FD80
+    dw $0280
+
+!wallkick_y_speed = #$FB00
+
+!wallkick_timer_decay = #$0001
+
+!s_player_x_speed_megaprev = $1414
+!wallkick_timer = $1416
+
 walljumps:
+    REP #$30
+    LDA !s_player_state
+    BNE .fail_ret
+    LDA !s_player_jump_state 
+    BEQ .fail_ret
+
+    LDA !s_player_tile_collision
+    AND #$0040
+    BNE .right_side_collision
+    AND #$0100
+    BNE .left_side
+    BRA .fail_ret
+
+.right_side_collision
+    LDA !wallkick_timer
+    DEC A
+    BPL .allow_jump
+
+    LDA !s_player_x_speed_megaprev
+    CMP #$0100
+    BCC .fail_ret
+    STA !wallkick_timer
+
+.allow_jump
+    SEC
+    SBC !wallkick_timer_decay
+    STA !wallkick_timer
+
+    LDA #$003B
+    STA !s_player_cur_anim_frame
+
+    LDA #$00C0
+    STA !s_player_y_speed
+
+    LDA $6073
+    AND #$0080
+    BEQ .ret
+
+    LDX !s_player_direction
+    LDA wallkick_x_speeds,x
+    CLC
+    ADC !s_player_x_speed
+    STA !s_player_x_speed
+
+    LDA !wallkick_y_speed
+    STA !s_player_y_speed
+    LDA #$0006
+    STA !s_player_jump_state
+
+    LDA #$0002
+    STA !s_player_direction
+
+    LDA #$0049
+    JSL $0085D2
+
+    BRA .ret
+
+.left_side
+    LDA #$003B
+    STA !s_player_cur_anim_frame
+
+
+    BRA .ret
+
+.fail_ret
+    STZ !wallkick_timer
 
 .ret
+    LDA !s_player_x_speed_prev
+    STA !s_player_x_speed_megaprev
+
+    SEP #$30
     RTS
 
 ;=================================

@@ -230,9 +230,10 @@ function generateLevelSettings(rom, options) {
     var levelSettings = [];
 
     LEVEL_OFFSETS.forEach(function(level, i) {
-        if (i == 0) {
-            levelSettings.push(0x18);
-        }
+        
+        var globalMode = document.getElementById("selectMode");
+        levelSettings.push(globalMode);
+        
 
         levelSettings = levelSettings.concat(LEVEL_SETTINGS_ENDMARKER);
 

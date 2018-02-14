@@ -4,6 +4,21 @@
         <script src="settings.js" type="text/javascript"></script>
     </head>
     <body>
+        <br>
+
+          <select id = "selectMode">
+           <option value = 0x02>Drunk Mode</option>
+           <option value = 0x04>Hard Mode</option>
+           <option value = 0x08>Always Extended Flutter</option>
+           <option value = 0x0A>Sticky Ground</option>
+           <option value = 0x14>Reverse Controls</option>
+           <option value = 0x16>Random Cursor</option>
+           <option value = 0x18>Bouncy Castle</option>
+           <option value = 0x1C>No Flutters</option>
+           <option value = 0x1E>Can't Tongue Enemies</option>
+          </select>
+
+        <br>
         Randomize Level Order: <input type="checkbox" id="randomLevelOrder" checked="checked" /><br>
         <button onclick="generateRom()">Generate ROM</button>
 
