@@ -231,7 +231,7 @@ function generateLevelSettings(rom, options) {
 
     LEVEL_OFFSETS.forEach(function(level, i) {
         if (i == 0) {
-            levelSettings.push(0x08);
+            levelSettings.push(0x18);
         }
 
         levelSettings = levelSettings.concat(LEVEL_SETTINGS_ENDMARKER);

@@ -8,6 +8,7 @@ org $238000
 !original_world = $1412
 
 !floor_timer = $1440
+!air_timer = $1442
 
 !do_poison_coins = $1500
 !do_poison_flowers = $1502
@@ -28,7 +29,10 @@ org $238000
 !bouncy_allowed = $1516
 
 !required_score = $1518
+!required_score_type = $151A
 
+!poison_time_amount = $151C
+!poison_air_amount = $151E
 
 !active_modes_amount = $1800
 !active_modes_pointers = $1802
@@ -37,18 +41,10 @@ org $238000
 ;=================================
 ;=================================
 ;=================================
-; Global Settings (for now)
-;=================================
-; !do_custom_level_order = #$01
-;=================================
-; !coin_poison_amount = #$FFF0
-;=================================
-; !flower_poison_amount = #$FFC0
-;=================================
 !level_mode_settings_endmarker = #$8089
 
 modes_pointers:
-    dw require_score                   ; 00 (1-byte)
+    dw require_score                   ; 00 (1-byte) _min
     dw drunk_mode                      ; 02
     dw hard_mode                       ; 04
     dw death_star_counter              ; 06
@@ -56,17 +52,17 @@ modes_pointers:
     dw sticky_ground                   ; 0A
     dw filled_mouth                    ; 0C (1-byte)
     dw boost_mode                      ; 0E (4-bytes)
-    dw placeholder_1                   ; 10 
-    dw placeholder_1                   ; 12 
+    dw require_score                   ; 10 (1-byte) _max
+    dw require_score                   ; 12 (1-byte) _equal
     dw reverse_control_mode            ; 14
     dw random_cursor                   ; 16
     dw bouncy_castle                   ; 18
-    dw placeholder_1                   ; 1A 
+    dw poison_air                      ; 1A (4-bytes)
     dw no_flutter                      ; 1C
     dw tongue_nothing                  ; 1E 
-    dw floor_is_lava                   ; 20
-    dw enable_poison_coin              ; 22
-    dw enable_poison_flower            ; 24
+    dw floor_is_lava                   ; 20 (4-bytes)
+    dw enable_poison_coin              ; 22 (2-bytes)
+    dw enable_poison_flower            ; 24 (2-bytes)
 
 
 ;=================================

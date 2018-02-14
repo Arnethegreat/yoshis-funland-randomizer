@@ -1,22 +1,169 @@
 each level has a list of game modes enabled with indexes and parameters if any
-each list is then marked ended with 0x8089
+each list is then marked ended with $8089 (0x8980 witn big endian) 
 
-    require_score =          0x00 (1-byte: score required (0-100))
-    drunk_mode =             0x02
-    hard_mode =              0x04
-    death_star_counter =     0x06
-    extended_flutter =       0x08
-    sticky_ground =          0x0A
-    filled_mouth =           0x0C (1-byte: item in mouth (1-4))
-    boost_mode =             0x0E (2-byte: boost amount / 2-bytes: max speed allowed)
-    placeholder_1 =          0x10
-    placeholder_1 =          0x12
-    reverse_control_mode =   0x14
-    random_cursor =          0x16
-    bouncy_castle =          0x18
-    tongue_everything =      0x1A
-    no_flutter =             0x1C
-    no_tongue =              0x1E
-    floor_is_lava =          0x20 (2-byte: frames inbetween damage on ground / 2-byte: damage taken each tick)
-    enable_poison_coin =     0x22 (2-bytes: amount of stars given/taken by coins)
-    enable_poison_flower =   0x24 (2-bytes: amount of stars given/taken by flowers)
+; =====================================
+require_score_minimum          = $00
+    1-byte parameter
+Player needs a MINIMUM required score to enter goal ring
+
+range ($00 to $64)
+
+; =====================================
+
+drunk_mode                     = 02
+
+Makes Yoshi be in drunk mode (fuzzied or carrying big egg) during whole level
+
+; =====================================
+
+hard_mode                      = 04
+
+Getting hit takes down star counter to 0
+
+; =====================================
+
+death_star_counter             = 06
+
+When star counter hits 0, player instantly dies
+
+Is meant to be active during poison modes and floor is lava
+
+; =====================================
+
+extended_flutter               = 08
+
+Always be able to do extended flutter (as if bounced off an enemy)
+
+; =====================================
+
+sticky_ground                  = 0A
+
+Makes Yoshi stick to ground and move extremely slow, air speed is normal
+
+; =====================================
+
+filled_mouth                   = 0C
+    1-byte parameter
+
+Fills mouth permanently with melon seeds or bubbles (fire/ice to be added later)
+range: ($02 - $03) (bubbles/melon)
+
+; =====================================
+
+boost_mode                     = 0E
+    4-bytes parameter
+
+Press X to get a boost in velocity
+
+Word 1: 
+    speed increase per frame
+    range: ($0001 to $0100)
+    recommended: ($000C to $0040)
+
+Word 2:
+    Max Speed possible from boost:
+    range: ($0300 to $0C00)
+    recommended: ($0400 to $0A00)
+
+; =====================================
+require_score                  = 10 (1-byte) _max
+    1-byte parameter
+Player needs a MAXIMUM required score to enter goal ring
+
+range ($00 to $64)
+
+; =====================================
+require_score                  = 12 (1-byte) _equal
+    1-byte parameter
+Player needs an EXACT required score to enter goal ring
+
+range ($00 to $64)
+
+; =====================================
+reverse_control_mode           = 14
+
+Left & Right is reversed just like with 4-E enemy
+
+; =====================================
+random_cursor                  = 16
+
+Egg Aim Cursor has random angle each frame
+
+; =====================================
+bouncy_castle                  = 18
+
+Yoshi bounces on all ground he touches
+
+; =====================================
+poison_air                     = 1A
+    4-bytes parameter
+
+Player takes damage when he's NOT touching the ground
+Recommended with death_star_counter
+
+Word 1:
+    How many frames between each hurt frame when in danger zone,
+    recommended: ($0004 to $0010)
+
+Word 2:
+    How much damage to take each hurt frame (each star is counted as 10)
+    recommended: ($0002 to $0010)
+
+
+Negative values allowed for damage (healing)
+
+; =====================================
+no_flutter                     = 1C
+
+Disables flutters completely
+
+; =====================================
+tongue_nothing                 = 1E
+
+All enemies and sprites are untongueable (includes eggs)
+
+; =====================================
+floor_is_lava                  = 20
+    4-bytes parameter
+
+Player takes damage when he IS touching ground
+Recommended with death_star_counter
+
+Word 1:
+    How many frames between each hurt frame when in danger zone,
+    recommended: ($0004 to $0010)
+
+Word 2:
+    How much damage to take each hurt frame (each star is counted as 10)
+    recommended: ($0002 to $0012)
+
+
+Negative values allowed for damage (healing)
+
+; =====================================
+enable_poison_coin             = 22
+    2-bytes parameter
+
+When player collects a coin, he has stars given (or taken with neg values)
+Recommended with death_star_counter
+
+Word 1:
+    Amount of stars given/taken when collecting
+    Recommended: ($FED4 - $0300) (full kill to full heal)
+
+Negative values allowed for damage (healing)
+
+; =====================================
+enable_poison_flower           = 24 (2-bytes)
+    2-bytes parameter
+
+When player collects a flower, he has stars given (or taken with neg values)
+Recommended with death_star_counter
+
+Word 1:
+    Amount of stars given/taken when collecting
+    Recommended: ($FED4 - $0300) (full kill to full heal)
+
+Negative values allowed for damage (healing)
+
+; =====================================

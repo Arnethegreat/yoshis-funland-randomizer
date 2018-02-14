@@ -121,6 +121,8 @@ get_level_settings:
     STZ !temp_03
 
     STZ !floor_timer
+    STZ !air_timer
+
     STZ !do_poison_coins
     STZ !do_poison_flowers
     STZ !poison_coins_amount
@@ -134,6 +136,9 @@ get_level_settings:
     STZ !melon_type
     STZ !bouncy_allowed 
     STZ !required_score
+
+    STZ !poison_air_amount
+    STZ !poison_time_amount
 
     STZ !active_modes_amount    
     LDX #$00FE
@@ -195,7 +200,12 @@ parse_parameters:
     INX
 
     CMP #$0000
-    BEQ .require_score
+    BEQ .require_score_min
+    CMP #$0010
+    BEQ .require_score_max
+    CMP #$0012
+    BEQ .require_score_equal
+
     CMP #$000C
     BEQ .filled_mouth
     CMP #$000E
@@ -206,10 +216,27 @@ parse_parameters:
     BEQ .poison_coin
     CMP #$0024
     BEQ .poison_flower
+    CMP #$001A
+    BEQ .poison_air
 
     RTS
 
-.require_score
+
+
+.require_score_min
+    LDA #$8000
+    STA !required_score_type
+    BRA .require_score_set
+.require_score_max
+    LDA #$0080
+    STA !required_score_type
+    BRA .require_score_set
+.require_score_equal
+    LDA #$0008
+    STA !required_score_type
+    ; BRA .require_score_set
+
+.require_score_set
     LDA custom_mode_settings,x
     AND #$00FF
     STA !required_score
@@ -252,7 +279,7 @@ parse_parameters:
 .lava_floor
 ; 4-bytes
     LDA custom_mode_settings,x
-    STA !boost_amount
+    STA !lava_time_amount 
     INX
     INX
     LDA custom_mode_settings,x
@@ -275,6 +302,19 @@ parse_parameters:
 ; 2-bytes
     LDA custom_mode_settings,x
     STA !poison_flowers_amount
+    INX
+    INX
+
+    RTS
+
+.poison_air
+; 4-bytes
+    LDA custom_mode_settings,x
+    STA !poison_time_amount
+    INX
+    INX
+    LDA custom_mode_settings,x
+    STA !poison_air_amount
     INX
     INX
 

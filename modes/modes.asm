@@ -142,7 +142,7 @@ reverse_control_mode:
 ;=================================
 
 ; ice physics how??
-;
+; IMPOSSIBLE
 ;ground_physics:
 ;    LDA #$03
 ;    STA $60FA
@@ -227,12 +227,45 @@ no_flutter:
     RTS
 
 ;=================================
-; puffy cheeks 
-; disabled
 
-no_tongue:
+poison_air:
+    REP #$20
+    LDA !s_player_state
+    BNE .ret
+    LDA !s_player_tile_collision
+    AND #$0007
+    ORA !s_on_sprite_platform_flag
+    BNE .ret
 
+    LDA !air_timer
+    BMI .damage
+
+    DEC !air_timer
+    BRA .ret
+
+.damage
+    LDA $03B6
+    BNE .decrease
+    STZ $03B6
+    BRA .reset_timer
+.decrease
+    SEC
+    SBC !poison_air_amount
+    STA $03B6
+
+    PHA
+    PHY
+    JSR test_spawn      ; test
+    PLY
+    PLA
+
+    BPL .reset_timer
+    STZ $03B6
+.reset_timer
+    LDA !poison_time_amount
+    STA !air_timer
 .ret
+    SEP #$30
     RTS
 
 ;=================================
@@ -292,6 +325,8 @@ enable_poison_flower:
     RTS
 
 test_spawn:
+    LDA #$001F
+    STA !r_starcounter_timer
     LDA #$01E0                                ; $02ABB7 |
     JSL $008B21                               ; $02ABBA |
     LDA !s_player_x                           ; $02ABBE |

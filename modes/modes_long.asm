@@ -57,11 +57,37 @@ goal_ring_check:
     PLY
     PLX
 
+    PHA
+
+    LDA !required_score_type
+    CMP #$8000
+    BEQ .min
+    CMP #$0080
+    BEQ .max
+    CMP #$0008
+    BEQ .eq
+
+.min
+    PLA
     CMP !required_score
-    BCC .hack_out
+    BCC .failed_req
+    BRA .ret
+.max
+    PLA
+; DEC so max score is allowed
+    DEC A
+    CMP !required_score
+    BCS .failed_req
+    BRA .ret
+.eq
+    PLA
+    CMP !required_score
+    BNE .failed_req
     BRA .ret
 
-.hack_out
+
+
+.failed_req
 ; Incorrect sound
     LDA #$0090
     JSL $0085D2
