@@ -22,6 +22,13 @@ drunk_mode:
 
 ;=================================
 
+walljumps:
+
+.ret
+    RTS
+
+;=================================
+
 hard_mode:
     LDA $61B3 ; baby mario state
     CMP #$80
