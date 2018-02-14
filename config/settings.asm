@@ -63,6 +63,7 @@ modes_pointers:
     dw floor_is_lava                   ; 20 (4-bytes)
     dw enable_poison_coin              ; 22 (2-bytes)
     dw enable_poison_flower            ; 24 (2-bytes)
+    dw walljumps                       ; 26
 
 
 ;=================================
