@@ -1,35 +1,5 @@
 "use strict"
-var randomLevelOrder
-var boost
-var filledMouth
-var stickyGround
-var extendedFlutter
-var deathStarCounter
-var hardMode
-var drunkMode
-var noTongue
-var noFlutter
-var bouncyCastle
-var randomCursor
-var reverseControl
-var turbo
-var powerfulYoshi
-var poisonCoins
-var extraLevels
-var bonusLevels
 
-let modes = [
-    boost, filledMouth, stickyGround,
-    extendedFlutter, deathStarCounter, hardMode,
-    drunkMode, noTongue, noFlutter, bouncyCastle,
-    randomCursor, reverseControl, turbo,
-    powerfulYoshi, poisonCoins
-    ];
-
-//let maxModesInputVal = parseInt(document.getElementById("maxEnabledModes").value);
-//let maxEnabledModes = maxModesInputVal !== NaN ? maxModesInputVal : 100;
-
-let levelModeFilter = {};
 
 /**
  * Shuffles array in place.
@@ -54,6 +24,61 @@ function shuffle(array) {
 
     return array;
 }
+
+function getModesEnabled() {
+    var checkboxes = document.getElementsByName("modeEnable");
+    var modesEnabled = [];
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i].checked) {
+            modesEnabled.push(checkboxes[i].value)
+        }
+    }
+    // console.log(modesEnabled)
+    return modesEnabled
+}
+
+var DMG_TICKS_FRAMES = 0x0008
+
+function getModeParameters(modeIndex) {
+    var parameterSettings = []
+    if (modeIndex == 0x00 || modeIndex == 0x10 || modeIndex == 0x12) {
+        var modeParam = document.getElementById("requireScore").value
+        var parameterSettings = littleEndianToBytes(modeParam, 1)
+    }
+    if (modeIndex == 0x0C) {
+        var modeParam = document.getElementById("filledMouth").value
+        var parameterSettings = littleEndianToBytes(modeParam, 1)
+    }
+    if (modeIndex == 0x0E) {
+        var modeParam = document.getElementById("boostIncrease").value
+        var modeParam2 = document.getElementById("boostMax").value
+        var parameterSettings = littleEndianToBytes(modeParam, 2)
+        var parameterSettings = parameterSettings.concat(littleEndianToBytes(modeParam2, 2))
+    }
+    if (modeIndex == 0x1A) {
+        var modeParam = DMG_TICKS_FRAMES
+        var modeParam2 = document.getElementById("poisonAir").value
+        var parameterSettings = littleEndianToBytes(modeParam, 2)
+        var parameterSettings = parameterSettings.concat(littleEndianToBytes(modeParam2, 2))
+    }
+    if (modeIndex == 0x20) {
+        var modeParam = DMG_TICKS_FRAMES
+        var modeParam2 = document.getElementById("floorLava").value
+        var parameterSettings = littleEndianToBytes(modeParam, 2)
+        var parameterSettings = parameterSettings.concat(littleEndianToBytes(modeParam2, 2))
+    }
+    if (modeIndex == 0x22) {
+        var modeParam = document.getElementById("poisonCoins").value
+        var parameterSettings = littleEndianToBytes(modeParam, 2)
+    }
+    if (modeIndex == 0x24) {
+        var modeParam = document.getElementById("poisonFlowers").value
+        var parameterSettings = littleEndianToBytes(modeParam, 2)
+    }
+    // console.log(parameterSettings)
+    return parameterSettings
+}
+
 
 function randomizeLevelOrder(rom, options) {
     var levelIndexes = {
@@ -119,9 +144,6 @@ let randomInteger = function(max) {
     return Math.floor(Math.random() * (max + 1));
 }
 
-let generate = function() {
-    return Math.floor(Math.random() * 2);
-}
 
 function generateSeed() {
     document.getElementById("randomSeed").value = randomInteger(1000000000);
@@ -163,25 +185,6 @@ function getOptions() {
     return {
         randomLevelOrder: document.getElementById('randomLevelOrder').checked
 
-        /* to be enabled as we get to them */
-
-        // boost: document.getElementById('boost').checked,
-        // filledMouth: document.getElementById('filledMouth').checked,
-        // stickyGround: document.getElementById('stickyGround').checked,
-        // extendedFlutter: document.getElementById('extendedFlutter').checked,
-        // deathStarCounter: document.getElementById('deathStarCounter').checked,
-        // hardMode: document.getElementById('hardMode').checked,
-        // drunkMode: document.getElementById('drunkMode').checked,
-        // noTongue: document.getElementById('noTongue').checked,
-        // noFlutter: document.getElementById('noFlutter').checked,
-        // bouncyCastle: document.getElementById('bouncyCastle').checked,
-        // randomCursor: document.getElementById('randomCursor').checked,
-        // reverseControl: document.getElementById('reverseControl').checked,
-        // turbo: document.getElementById('turbo').checked,
-        // powerfulYoshi: document.getElementById('powerfulYoshi').checked,
-        // poisonCoins: document.getElementById('poisonCoins').checked,
-        // extraLevels: document.getElementById('extraLevels').checked,
-        // bonusLevels: document.getElementById('bonusLevels').checked
     };
 }
 
@@ -230,12 +233,22 @@ function generateLevelSettings(rom, options) {
     var levelSettings = [];
 
     LEVEL_OFFSETS.forEach(function(level, i) {
-        
-        var globalMode = document.getElementById("selectMode").value;
-        levelSettings.push(globalMode);
-        
+        var globalModes = getModesEnabled();
+        var modeParams = []
+        for (var i = 0; i < globalModes.length; i++) {
+            var mode = globalModes[i] & 0xFF
+            levelSettings.push(mode);
+            modeParams = getModeParameters(mode);
+            if (typeof modeParams !== 'undefined' && modeParams) {
+                levelSettings = levelSettings.concat(modeParams);
+            }
+        }
 
         levelSettings = levelSettings.concat(LEVEL_SETTINGS_ENDMARKER);
+
+        console.log("S W A G")
+        console.log(levelSettings)
+        // levelSettings = levelSettings.concat(LEVEL_SETTINGS_ENDMARKER);
 
         // a bit of a hack but we need to account for the score and controller tiles at the end of the world maps
         if ((i + 1) % 10 == 0) {

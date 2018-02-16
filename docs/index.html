@@ -8,27 +8,13 @@
         <link href="css/funland.css" type="text/css" rel="stylesheet" />
         <script src="js/jquery-3.3.1.min.js" type="text/javascript"></script>
         <script src="js/bootstrap.min.js" type="text/javascript"></script>
-        <script src="settings.js" type="text/javascript"></script>
+        <script src="js/quickmafs.js" type="text/javascript"></script>
+        <script src="js/settings.js" type="text/javascript"></script>
     </head>
     <body>
         <div class="container">
             <h1>Yoshi's Funland Randomizer</h1>
 
-            <div class="row">
-                <div class="col-auto">
-                    <select id="selectMode" class="form-control">
-                        <option value="0x02">Drunk Mode</option>
-                        <option value="0x04">Hard Mode</option>
-                        <option value="0x08">Always Extended Flutter</option>
-                        <option value="0x0A">Sticky Ground</option>
-                        <option value="0x14">Reverse Controls</option>
-                        <option value="0x16">Random Cursor</option>
-                        <option value="0x18">Bouncy Castle</option>
-                        <option value="0x1C">No Flutters</option>
-                        <option value="0x1E">Can't Tongue Enemies</option>
-                    </select>
-                </div>
-            </div>
             <div class="row">
                 <div class="col-auto form-check">
                     <input class="form-check-input" type="checkbox" id="randomLevelOrder" checked="checked" />
@@ -42,37 +28,115 @@
             </div>
         </div>
 
-        <!--
-        Random Seed: <input type="number" id="randomSeed">
-        <button onclick="generateSeed()">Random</button><br>
-        Include Extra Levels: <input type="checkbox" id="extraLevels" /><br>
-        Include Bonus Levels: <input type="checkbox" id="bonusLevels" /><br>
 
-        <button onclick="generateLevelOrder()">Generate Level Order</button><br>
+        <!-- Random Seed: <input type="number" id="randomSeed"> -->
+        <!-- <button onclick="generateSeed()">Random</button><br> -->
+        <!-- <input type="checkbox" id="extraLevels" /> Include Extra Levels (not implemented)<br> -->
+        <!-- <button name="tester" onclick="getModeParameters(0x24)">Test Button For Swag Testing</button> -->
 
 
-
-        boost: <input type="checkbox" id="boost" /><br>
-        filledMouth: <input type="checkbox" id="filledMouth" /><br>
-        stickyGround: <input type="checkbox" id="stickyGround" /><br>
-        extendedFlutter: <input type="checkbox" id="extendedFlutter" /><br>
-        deathStarCounter: <input type="checkbox" id="deathStarCounter" /><br>
-        hardMode: <input type="checkbox" id="hardMode" /><br>
-        drunkMode: <input type="checkbox" id="drunkMode" /><br>
-
-        noTongue: <input type="checkbox" id="noTongue" /><br>
-        noFlutter: <input type="checkbox" id="noFlutter" /><br>
-        bouncyCastle: <input type="checkbox" id="bouncyCastle" /><br>
-        randomCursor: <input type="checkbox" id="randomCursor" /><br>
-        reverseControl: <input type="checkbox" id="reverseControl" /><br>
-        turbo: <input type="checkbox" id="turbo" /><br>
-        powerfulYoshi: <input type="checkbox" id="powerfulYoshi" /><br>
-        poisonCoins: <input type="checkbox" id="poisonCoins" /><br>
-
+        <br><input type="checkbox" id="hi" value=0x00 name="modeEnable"/>  Require Minimum Score
+        <br><input type="checkbox" id="hi" value=0x02 name="modeEnable"/>  Drunk Yoshi
+        <br><input type="checkbox" id="hi" value=0x04 name="modeEnable"/>  Hard Mode
+        <br><input type="checkbox" id="hi" value=0x06 name="modeEnable"/>  Zero Stars is Death (use with star decreasing modes)
+        <br><input type="checkbox" id="hi" value=0x08 name="modeEnable"/>  Always Extended Flutter
+        <br><input type="checkbox" id="hi" value=0x0A name="modeEnable"/>  Sticky Ground
+        <br><input type="checkbox" id="hi" value=0x0C name="modeEnable"/>  Always Bubbles/Melon
+        <br><input type="checkbox" id="hi" value=0x0E name="modeEnable"/>  Press X for Speed Boost
+        <br><input type="checkbox" id="hi" value=0x10 name="modeEnable"/>  Require Maximum Score
+        <br><input type="checkbox" id="hi" value=0x12 name="modeEnable"/>  Require Exact Score
+        <br><input type="checkbox" id="hi" value=0x14 name="modeEnable"/>  Controls are Reversed
+        <br><input type="checkbox" id="hi" value=0x16 name="modeEnable"/>  Egg Aim Cursor Randomized
+        <br><input type="checkbox" id="hi" value=0x18 name="modeEnable"/>  Bouncy Bouncy Castle
+        <br><input type="checkbox" id="hi" value=0x1A name="modeEnable"/>  Poison/Healing Air
+        <br><input type="checkbox" id="hi" value=0x1C name="modeEnable"/>  No Flutters
+        <br><input type="checkbox" id="hi" value=0x1E name="modeEnable"/>  Can't Tongue Sprites
+        <br><input type="checkbox" id="hi" value=0x20 name="modeEnable"/>  Floor is Lava
+        <br><input type="checkbox" id="hi" value=0x22 name="modeEnable"/>  Coins heal/damage you
+        <br><input type="checkbox" id="hi" value=0x24 name="modeEnable"/>  Flowers heal/damage you
+    
         <br>
-        max enabled modes
-        <input type="number" id="maxEnabledModes" />
-        -->
+        <br>
+
+        Require Score: 
+        <input type="number" id="requireScore" value=10  min="0" max="100"><br>
+        Bubbles/Melon Seeds: 
+        <select id="filledMouth">
+            <option value=0x02>Bubbles</option>
+            <option value=0x03>Melon Seeds</option>
+        </select><br>
+        Boost Speed Acceleration
+        <select id="boostIncrease">
+            <option value=0x08>Slow</option>
+            <option value=0x010>Medium</option>
+            <option value=0x020>Fast</option>
+            <option value=0x040>Very Fast</option>
+        </select>
+        <br>
+        Boost Max Speed
+        <select id="boostMax">
+            <option value=0x400>Slow</option>
+            <option value=0x600>Medium</option>
+            <option value=0x800>Fast</option>
+            <option value=0xA00>Very Fast</option>
+            <option value=0xC00>Too Fast For Camera</option>
+        </select>
+        <br>
+        Poison/Healing Air
+        <select id="poisonAir">
+            <option value=0xFFFE>Heal Slow</option>
+            <option value=0xFFFA>Heal Medium</option>
+            <option value=0xFFF6>Heal Fast</option>
+            <option value=0xFFF0>Heal Very Fast</option>
+            <option value=0x02>Damage Slow</option>
+            <option value=0x06>Damage Medium</option>
+            <option value=0xA>Damage Fast</option>
+            <option value=0x10>Damage Very Fast</option>
+        </select>
+        <br>
+        Floor is Lava
+        <select id="floorLava">
+            <option value=0xFFFE>Heal Slow</option>
+            <option value=0xFFFA>Heal Medium</option>
+            <option value=0xFFF6>Heal Fast</option>
+            <option value=0xFFF0>Heal Very Fast</option>
+            <option value=0x02>Damage Slow</option>
+            <option value=0x06>Damage Medium</option>
+            <option value=0x0A>Damage Fast</option>
+            <option value=0x10>Damage Very Fast</option>
+            <option value=0x14>Damage Extremely Fast</option>
+        </select>
+        <br>
+        Poison/Healing Coins
+        <select id="poisonCoins">
+            <option value=0x000A>Heal 1</option>
+            <option value=0x0014>Heal 2</option>
+            <option value=0x0032>Heal 5</option>
+            <option value=0x0064>Heal 10</option>
+            <option value=0xFFF6>Damage 1</option>
+            <option value=0xFFEC>Damage 2</option>
+            <option value=0xFFCE>Damage 5</option>
+            <option value=0xFF9C>Damage 10</option>
+            <option value=0xFF38>Damage 20</option>
+            <option value=0xFED4>Fuckin kill you</option>
+        </select>
+        <br>
+        Poison/Healing Flowers
+        <select id="poisonFlowers">
+            <option value=0x000A>Heal 1</option>
+            <option value=0x0014>Heal 2</option>
+            <option value=0x0032>Heal 5</option>
+            <option value=0x0064>Heal 10</option>
+            <option value=0xFFF6>Damage 1</option>
+            <option value=0xFFEC>Damage 2</option>
+            <option value=0xFFCE>Damage 5</option>
+            <option value=0xFF9C>Damage 10</option>
+            <option value=0xFF38>Damage 20</option>
+            <option value=0xFED4>Fuckin kill you</option>
+        </select>
+        <br>
+
+
         </div>
     </body>
 </html>
