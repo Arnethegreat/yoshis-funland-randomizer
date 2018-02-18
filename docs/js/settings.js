@@ -25,60 +25,19 @@ function shuffle(array) {
     return array;
 }
 
-function getModesEnabled() {
-    var checkboxes = document.getElementsByName("modeEnable");
-    var modesEnabled = [];
-    for (var i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i].checked) {
-            modesEnabled.push(checkboxes[i].value)
+function getEnabledModes(options) {
+    var enabledModes = [];
+
+    Object.keys(options.modes).forEach(function(modeName) {
+        var mode = options.modes[modeName];
+
+        if (mode.enabled) {
+            enabledModes.push(options.modes[modeName]);
         }
-    }
-    // console.log(modesEnabled)
-    return modesEnabled
+    });
+
+    return enabledModes;
 }
-
-var DMG_TICKS_FRAMES = 0x0008
-
-function getModeParameters(modeIndex) {
-    var parameterSettings = []
-    if (modeIndex == 0x00 || modeIndex == 0x10 || modeIndex == 0x12) {
-        var modeParam = document.getElementById("requireScore").value
-        var parameterSettings = littleEndianToBytes(modeParam, 1)
-    }
-    if (modeIndex == 0x0C) {
-        var modeParam = document.getElementById("filledMouth").value
-        var parameterSettings = littleEndianToBytes(modeParam, 1)
-    }
-    if (modeIndex == 0x0E) {
-        var modeParam = document.getElementById("boostIncrease").value
-        var modeParam2 = document.getElementById("boostMax").value
-        var parameterSettings = littleEndianToBytes(modeParam, 2)
-        var parameterSettings = parameterSettings.concat(littleEndianToBytes(modeParam2, 2))
-    }
-    if (modeIndex == 0x1A) {
-        var modeParam = DMG_TICKS_FRAMES
-        var modeParam2 = document.getElementById("poisonAir").value
-        var parameterSettings = littleEndianToBytes(modeParam, 2)
-        var parameterSettings = parameterSettings.concat(littleEndianToBytes(modeParam2, 2))
-    }
-    if (modeIndex == 0x20) {
-        var modeParam = DMG_TICKS_FRAMES
-        var modeParam2 = document.getElementById("floorLava").value
-        var parameterSettings = littleEndianToBytes(modeParam, 2)
-        var parameterSettings = parameterSettings.concat(littleEndianToBytes(modeParam2, 2))
-    }
-    if (modeIndex == 0x22) {
-        var modeParam = document.getElementById("poisonCoins").value
-        var parameterSettings = littleEndianToBytes(modeParam, 2)
-    }
-    if (modeIndex == 0x24) {
-        var modeParam = document.getElementById("poisonFlowers").value
-        var parameterSettings = littleEndianToBytes(modeParam, 2)
-    }
-    // console.log(parameterSettings)
-    return parameterSettings
-}
-
 
 function randomizeLevelOrder(rom, options) {
     var levelIndexes = {
@@ -129,8 +88,6 @@ function randomizeLevelOrder(rom, options) {
         customLevelOrder.push(levelIndexes.bonuses.shift()); // x-B
     }
 
-    console.log(customLevelOrder)
-
     customLevelOrder.forEach(function(level, i) {
         rom[WORLD_MAPS + LEVEL_OFFSETS[i]] = level;
     });
@@ -147,7 +104,6 @@ let randomInteger = function(max) {
 
 function generateSeed() {
     document.getElementById("randomSeed").value = randomInteger(1000000000);
-    console.log("hello")
 }
 
 
@@ -183,8 +139,114 @@ function saveAs(blob, fileName) {
 
 function getOptions() {
     return {
-        randomLevelOrder: document.getElementById('randomLevelOrder').checked
+        randomizeLevelOrder: $('input[name=randomizeLevelOrder]').is(':checked'),
 
+        modes: {
+            scoreRequirementMinimum: {
+                code: 0x00,
+
+                enabled: ($('input[name=scoreRequirementType]:checked').val() == 'minimum'),
+                parameters: littleEndianToBytes(parseInt($('input[name=scoreRequirementScore]').val()), 1)
+            },
+            drunkMode: {
+                code: 0x02,
+
+                enabled: $('input[name=drunkMode]').is(':checked')
+            },
+            hardMode: {
+                code: 0x04,
+
+                enabled: $('input[name=hardMode]').is(':checked')
+            },
+            deathStarCounter: {
+                code: 0x06,
+
+                enabled: $('input[name=deathStarCounter]').is(':checked')
+            },
+            extendedFlutters: {
+                code: 0x08,
+
+                enabled: $('input[name=extendedFlutters]').is(':checked')
+            },
+            stickyGround: {
+                code: 0x0A,
+
+                enabled: $('input[name=stickyGround]').is(':checked')
+            },
+            filledMouth: {
+                code: 0x0C,
+
+                enabled: ($('select[name=filledMouth]').val() != ''),
+                parameters: littleEndianToBytes(MOUTH_MODIFIERS[$('select[name=filledMouth]').val()], 1)
+            },
+            speedBoost: {
+                code: 0x0E,
+
+                enabled: $('input[name=speedBoost]').is(':checked'),
+                parameters: [].concat(littleEndianToBytes(BOOST_MODIFIERS[$('select[name=speedBoostAcceleration]').val()], 2)).concat(littleEndianToBytes(BOOST_MODIFIERS[$('select[name=speedBoostMaximumSpeed]').val()], 2))
+            },
+            scoreRequirementMaximum: {
+                code: 0x10,
+
+                enabled: ($('input[name=scoreRequirementType]:checked').val() == 'maximum'),
+                parameters: littleEndianToBytes(parseInt($('input[name=scoreRequirementScore]').val()), 1)
+            },
+            scoreRequirementExact: {
+                code: 0x12,
+
+                enabled: ($('input[name=scoreRequirementType]:checked').val() == 'exact'),
+                parameters: littleEndianToBytes(parseInt($('input[name=scoreRequirementScore]').val()), 1)
+            },
+            reverseControls: {
+                code: 0x14,
+
+                enabled: $('input[name=reverseControls]').is(':checked')
+            },
+            randomEggCursor: {
+                code: 0x16,
+
+                enabled: $('input[name=randomEggCursor]').is(':checked')
+            },
+            bouncyCastle: {
+                code: 0x18,
+
+                enabled: $('input[name=bouncyCastle]').is(':checked')
+            },
+            airModifier: {
+                code: 0x1A,
+
+                enabled: ($('select[name=airModifier]').val() != ''),
+                parameters: [].concat(littleEndianToBytes(DMG_TICKS_FRAMES, 2)).concat(littleEndianToBytes(HEALTH_MODIFIERS[$('select[name=airModifier]').val()], 2))
+            },
+            noFlutters: {
+                code: 0x1C,
+
+                enabled: $('input[name=noFlutters]').is(':checked')
+            },
+            nothingTongueable: {
+                code: 0x1E,
+
+                enabled: $('input[name=nothingTongueable]').is(':checked')
+            },
+            floorModifier: {
+                code: 0x20,
+
+                enabled: ($('select[name=floorModifier]').val() != ''),
+                parameters: [].concat(littleEndianToBytes(DMG_TICKS_FRAMES, 2)).concat(littleEndianToBytes(HEALTH_MODIFIERS[$('select[name=floorModifier]').val()], 2))
+            },
+            coinModifier: {
+                code: 0x22,
+
+                enabled: ($('select[name=coinModifier]').val() != ''),
+                parameters: littleEndianToBytes(HEALTH_MODIFIERS[$('select[name=coinModifier]').val()], 2)
+            },
+            flowerModifier: {
+                code: 0x24,
+
+                enabled: ($('select[name=flowerModifier]').val() != ''),
+                parameters: littleEndianToBytes(HEALTH_MODIFIERS[$('select[name=flowerModifier]').val()], 2)
+            }
+        }
     };
 }
 
@@ -201,6 +263,48 @@ var LEVEL_OFFSETS = [
 var LEVEL_SETTINGS = 0x118071;
 var LEVEL_SETTINGS_ENDMARKER = [ 0x89, 0x80 ]; // this is reversed because of its endianness
 
+var DMG_TICKS_FRAMES = 0x0008;
+
+var HEALTH_MODIFIERS = {
+    healVeryFast: 0xFFF0,
+    healFast: 0xFFF6,
+    healMedium: 0xFFFA,
+    healSlow: 0xFFFE,
+    damageSlow: 0x0002,
+    damageMedium: 0x0006,
+    damageFast: 0x000A,
+    damageVeryFast: 0x0010,
+
+    healTen: 0x0064,
+    healFive: 0x0032,
+    healTwo: 0x0014,
+    healOne: 0x000A,
+    damageOne: 0xFFF6,
+    damageTwo: 0xFFEC,
+    damageFive: 0xFFCE,
+    damageTen: 0xFF9C,
+    damageTwenty: 0xFF38,
+    damageAll: 0xFED4
+};
+
+var MOUTH_MODIFIERS = {
+    bubbles: 0x02,
+    seeds: 0x03
+};
+
+var BOOST_MODIFIERS = {
+    accelerateSlow: 0x008,
+    accelerateMedium: 0x010,
+    accelerateFast: 0x020,
+    accelerateVeryFast: 0x040,
+
+    maximumSpeedSlow: 0x400,
+    maximumSpeedMedium: 0x600,
+    maximumSpeedFast: 0x800,
+    maximumSpeedVeryFast: 0xA00,
+    maximumSpeedTooFast: 0xC00
+};
+
 function generateRom() {
     var options = getOptions();
 
@@ -213,7 +317,7 @@ function generateRom() {
             var buffer = xhr.response;
             var rom = new Uint8Array(buffer);
 
-            if (options.randomLevelOrder) {
+            if (options.randomizeLevelOrder) {
                 randomizeLevelOrder(rom, options);
             }
 
@@ -231,24 +335,18 @@ function generateRom() {
 
 function generateLevelSettings(rom, options) {
     var levelSettings = [];
+    var globalModes = getEnabledModes(options);
 
     LEVEL_OFFSETS.forEach(function(level, i) {
-        var globalModes = getModesEnabled();
-        var modeParams = []
-        for (var i = 0; i < globalModes.length; i++) {
-            var mode = globalModes[i] & 0xFF
-            levelSettings.push(mode);
-            modeParams = getModeParameters(mode);
-            if (typeof modeParams !== 'undefined' && modeParams) {
-                levelSettings = levelSettings.concat(modeParams);
+        globalModes.forEach(function(mode, i) {
+            levelSettings.push(mode.code & 0xFF);
+
+            if (typeof mode.parameters !== 'undefined' && mode.parameters) {
+                levelSettings = levelSettings.concat(mode.parameters);
             }
-        }
+        });
 
         levelSettings = levelSettings.concat(LEVEL_SETTINGS_ENDMARKER);
-
-        console.log("S W A G")
-        console.log(levelSettings)
-        // levelSettings = levelSettings.concat(LEVEL_SETTINGS_ENDMARKER);
 
         // a bit of a hack but we need to account for the score and controller tiles at the end of the world maps
         if ((i + 1) % 10 == 0) {
@@ -259,3 +357,35 @@ function generateLevelSettings(rom, options) {
 
     rom.set(levelSettings, LEVEL_SETTINGS);
 }
+
+function checkScoreRequirementType() {
+    var scoreRequirementType = $('input[name=scoreRequirementType]:checked').val();
+
+    if (scoreRequirementType == 'none') {
+        $('input[name=scoreRequirementScore]').prop('disabled', true);
+    }
+    else {
+        $('input[name=scoreRequirementScore]').prop('disabled', false);
+    }
+}
+
+function checkSpeedBoost() {
+    var speedBoostEnabled = $('input[name=speedBoost]').is(':checked');
+
+    if (speedBoostEnabled) {
+        $('select[name=speedBoostAcceleration]').prop('disabled', false);
+        $('select[name=speedBoostMaximumSpeed]').prop('disabled', false);
+    }
+    else {
+        $('select[name=speedBoostAcceleration]').prop('disabled', true);
+        $('select[name=speedBoostMaximumSpeed]').prop('disabled', true);
+    }
+}
+
+$(document).ready(function() {
+    $('input[name=scoreRequirementType]').click(checkScoreRequirementType);
+    $('input[name=speedBoost]').click(checkSpeedBoost);
+
+    checkScoreRequirementType();
+    checkSpeedBoost();
+});
