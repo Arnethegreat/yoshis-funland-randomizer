@@ -13,195 +13,199 @@
     </head>
     <body>
         <div class="container">
-            <h1 class="my-4">Yoshi's Funland Randomizer</h1>
+            <h1 class="mb-4">Yoshi's Funland Randomizer</h1>
 
             <div class="row">
                 <div class="col-12 col-sm-6 col-md-5 col-lg-4 mb-3">
-                    <h5>Level Randomization</h5>
+                    <div class="mb-3">
+                        <h5>Level Randomization</h5>
 
-                    <div class="col-auto form-check">
-                        <input class="form-check-input" type="checkbox" id="randomizeLevelOrder" name="randomizeLevelOrder" checked="checked" />
-                        <label class="form-check-label" for="randomizeLevelOrder">Randomize Level Order</label>
+                        <div class="col-auto form-check">
+                            <input class="form-check-input" type="checkbox" id="randomizeLevelOrder" name="randomizeLevelOrder" checked="checked" />
+                            <label class="form-check-label" for="randomizeLevelOrder">Randomize Level Order</label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <h5>Movement</h5>
+
+                        <div class="col-auto form-check">
+                            <input class="form-check-input" type="checkbox" id="drunkMode" name="drunkMode" />
+                            <label class="form-check-label" for="drunkMode">Drunk Mode</label>
+                        </div>
+                        <div class="col-auto form-check">
+                            <input class="form-check-input" type="checkbox" id="extendedFlutters" name="extendedFlutters" />
+                            <label class="form-check-label" for="extendedFlutters">All Flutters Extended</label>
+                        </div>
+                        <div class="col-auto form-check">
+                            <input class="form-check-input" type="checkbox" id="noFlutters" name="noFlutters" />
+                            <label class="form-check-label" for="noFlutters"> No Flutters</label>
+                        </div>
+                        <div class="col-auto form-check">
+                            <input class="form-check-input" type="checkbox" id="reverseControls" name="reverseControls" />
+                            <label class="form-check-label" for="reverseControls">Reverse Controls</label>
+                        </div>
+                        <div class="mb-3">
+                            <div class="col-auto form-check">
+                                <input class="form-check-input" type="checkbox" id="speedBoost" name="speedBoost" />
+                                <label class="form-check-label" for="speedBoost">Speed Boost with X Button</label>
+                            </div>
+                            <div class="col-auto form-group">
+                                <label class="col-form-label" for="speedBoostAcceleration">Acceleration</label>
+                                <select class="form-control form-control-sm" id="speedBoostAcceleration" name="speedBoostAcceleration">
+                                    <option value="accelerateSlow">Slow</option>
+                                    <option value="accelerateMedium">Medium</option>
+                                    <option value="accelerateFast">Fast</option>
+                                    <option value="accelerateVeryFast">Very Fast</option>
+                                </select>
+                            </div>
+                            <div class="col-auto form-group">
+                                <label class="col-form-label" for="speedBoostMaximumSpeed">Maximum Speed</label>
+                                <select class="form-control form-control-sm" id="speedBoostMaximumSpeed" name="speedBoostMaximumSpeed">
+                                    <option value="maximumSpeedSlow">Slow</option>
+                                    <option value="maximumSpeedMedium">Medium</option>
+                                    <option value="maximumSpeedFast">Fast</option>
+                                    <option value="maximumSpeedVeryFast">Very Fast</option>
+                                    <option value="maximumSpeedTooFast">Too Fast for Camera</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <h5>Score Requirement</h5>
+
+                        <div class="mb-3">
+                            <div class="col-auto form-check">
+                                <input class="form-check-input" type="radio" id="scoreRequirementNone" name="scoreRequirementType" value="none" checked="checked" />
+                                <label class="form-check-label" for="scoreRequirementNone">None</label>
+                            </div>
+                            <div class="col-auto form-check">
+                                <input class="form-check-input" type="radio" id="scoreRequirementMinimum" name="scoreRequirementType" value="minimum" />
+                                <label class="form-check-label" for="scoreRequirementMinimum">At Least</label>
+                            </div>
+                            <div class="col-auto form-check">
+                                <input class="form-check-input" type="radio" id="scoreRequirementExact" name="scoreRequirementType" value="exact" />
+                                <label class="form-check-label" for="scoreRequirementExact">Exactly</label>
+                            </div>
+                            <div class="col-auto form-check">
+                                <input class="form-check-input" type="radio" id="scoreRequirementMaximum" name="scoreRequirementType" value="maximum" />
+                                <label class="form-check-label" for="scoreRequirementMaximum">At Most</label>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-4 col-lg-3 col-xl-4 form-group">
+                            <input class="form-control mx-0" type="number" id="scoreRequirementScore" name="scoreRequirementScore" value="10"  min="0" max="100">
+                        </div>
                     </div>
                 </div>
 
                 <div class="col-12 col-sm-6 col-md-5 col-lg-4 mb-3">
-                    <h5>Movement</h5>
-
-                    <div class="col-auto form-check">
-                        <input class="form-check-input" type="checkbox" id="drunkMode" name="drunkMode" />
-                        <label class="form-check-label" for="drunkMode">Drunk Mode</label>
-                    </div>
-                    <div class="col-auto form-check">
-                        <input class="form-check-input" type="checkbox" id="extendedFlutters" name="extendedFlutters" />
-                        <label class="form-check-label" for="extendedFlutters">All Flutters Extended</label>
-                    </div>
-                    <div class="col-auto form-check">
-                        <input class="form-check-input" type="checkbox" id="noFlutters" name="noFlutters" />
-                        <label class="form-check-label" for="noFlutters"> No Flutters</label>
-                    </div>
-                    <div class="col-auto form-check">
-                        <input class="form-check-input" type="checkbox" id="reverseControls" name="reverseControls" />
-                        <label class="form-check-label" for="reverseControls">Reverse Controls</label>
-                    </div>
                     <div class="mb-3">
-                        <div class="col-auto form-check">
-                            <input class="form-check-input" type="checkbox" id="speedBoost" name="speedBoost" />
-                            <label class="form-check-label" for="speedBoost">Speed Boost with X Button</label>
-                        </div>
+                        <h5>Health and the Environment</h5>
+
                         <div class="col-auto form-group">
-                            <label class="col-form-label" for="speedBoostAcceleration">Acceleration</label>
-                            <select class="form-control form-control-sm" id="speedBoostAcceleration" name="speedBoostAcceleration">
-                                <option value="accelerateSlow">Slow</option>
-                                <option value="accelerateMedium">Medium</option>
-                                <option value="accelerateFast">Fast</option>
-                                <option value="accelerateVeryFast">Very Fast</option>
+                            <label class="col-form-label" for="floorModifier">Floor</label>
+                            <select class="form-control form-control-sm" id="floorModifier" name="floorModifier">
+                                <option value="" selected="selected">--</option>
+                                <option value="healVeryFast">Heals Very Quickly</option>
+                                <option value="healFast">Heals Quickly</option>
+                                <option value="healMedium">Heals Moderately</option>
+                                <option value="healSlow">Heals Slowly</option>
+                                <option value="damageSlow">Damages Slowly</option>
+                                <option value="damageMedium">Damages Moderately</option>
+                                <option value="damageFast">Damages Quickly</option>
+                                <option value="damageVeryFast">Damages Very Quickly</option>
                             </select>
                         </div>
                         <div class="col-auto form-group">
-                            <label class="col-form-label" for="speedBoostMaximumSpeed">Maximum Speed</label>
-                            <select class="form-control form-control-sm" id="speedBoostMaximumSpeed" name="speedBoostMaximumSpeed">
-                                <option value="maximumSpeedSlow">Slow</option>
-                                <option value="maximumSpeedMedium">Medium</option>
-                                <option value="maximumSpeedFast">Fast</option>
-                                <option value="maximumSpeedVeryFast">Very Fast</option>
-                                <option value="maximumSpeedTooFast">Too Fast for Camera</option>
+                            <label class="col-form-label" for="airModifier">Air</label>
+                            <select class="form-control form-control-sm" id="airModifier" name="airModifier">
+                                <option value="" selected="selected">--</option>
+                                <option value="healVeryFast">Heals Very Quickly</option>
+                                <option value="healFast">Heals Quickly</option>
+                                <option value="healMedium">Heals Moderately</option>
+                                <option value="healSlow">Heals Slowly</option>
+                                <option value="damageSlow">Damages Slowly</option>
+                                <option value="damageMedium">Damages Moderately</option>
+                                <option value="damageFast">Damages Quickly</option>
+                                <option value="damageVeryFast">Damages Very Quickly</option>
                             </select>
                         </div>
+                        <div class="col-auto form-group">
+                            <label class="col-form-label" for="coinModifier">Coins</label>
+                            <select class="form-control form-control-sm" id="coinModifier" name="coinModifier">
+                                <option value="" selected="selected">--</option>
+                                <option value="healTen">Heal 10 Stars</option>
+                                <option value="healFive">Heal 5 Stars</option>
+                                <option value="healTwo">Heal 2 Stars</option>
+                                <option value="healOne">Heal 1 Star</option>
+                                <option value="damageOne">Damage 1 Stars</option>
+                                <option value="damageTwo">Damage 2 Stars</option>
+                                <option value="damageFive">Damage 5 Stars</option>
+                                <option value="damageTen">Damage 10 Stars</option>
+                                <option value="damageTwenty">Damage 20 Stars</option>
+                                <option value="damageAll">Instantly Kill</option>
+                            </select>
+                        </div>
+                        <div class="col-auto form-group">
+                            <label class="col-form-label" for="flowerModifier">Flowers</label>
+                            <select class="form-control form-control-sm" id="flowerModifier" name="flowerModifier">
+                                <option value="" selected="selected">--</option>
+                                <option value="healTen">Heal 10 Stars</option>
+                                <option value="healFive">Heal 5 Stars</option>
+                                <option value="healTwo">Heal 2 Stars</option>
+                                <option value="healOne">Heal 1 Star</option>
+                                <option value="damageOne">Damage 1 Stars</option>
+                                <option value="damageTwo">Damage 2 Stars</option>
+                                <option value="damageFive">Damage 5 Stars</option>
+                                <option value="damageTen">Damage 10 Stars</option>
+                                <option value="damageTwenty">Damage 20 Stars</option>
+                                <option value="damageAll">Instantly Kill</option>
+                            </select>
+                        </div>
+                        <div class="col-auto form-check">
+                            <input class="form-check-input" type="checkbox" id="deathStarCounter" name="deathStarCounter" />
+                            <label class="form-check-label" for="deathStarCounter">Instant Death with 0 Stars</label>
+                        </div>
+                        <div class="col-auto form-check">
+                            <input class="form-check-input" type="checkbox" id="hardMode" name="hardMode" />
+                            <label class="form-check-label" for="hardMode">One-Hit Deaths</label>
+                        </div>
+                        <div class="col-auto form-check">
+                            <input class="form-check-input" type="checkbox" id="bouncyCastle" name="bouncyCastle" />
+                            <label class="form-check-label" for="bouncyCastle">Bouncy Castle</label>
+                        </div>
+                        <div class="col-auto form-check">
+                            <input class="form-check-input" type="checkbox" id="stickyGround" name="stickyGround" />
+                            <label class="form-check-label" for="stickyGround">Sticky Ground</label>
+                        </div>
                     </div>
-                </div>
-
-                <div class="col-12 col-sm-6 col-md-5 col-lg-4 mb-3">
-                    <h5>Score Requirement</h5>
 
                     <div class="mb-3">
+                        <h5>Egg and Mouth</h5>
+
                         <div class="col-auto form-check">
-                            <input class="form-check-input" type="radio" id="scoreRequirementNone" name="scoreRequirementType" value="none" checked="checked" />
-                            <label class="form-check-label" for="scoreRequirementNone">None</label>
+                            <input class="form-check-input" type="checkbox" id="nothingTongueable" name="nothingTongueable" />
+                            <label class="form-check-label" for="nothingTongueable">Nothing Is Tongueable</label>
                         </div>
                         <div class="col-auto form-check">
-                            <input class="form-check-input" type="radio" id="scoreRequirementMinimum" name="scoreRequirementType" value="minimum" />
-                            <label class="form-check-label" for="scoreRequirementMinimum">At Least</label>
+                            <input class="form-check-input" type="checkbox" id="randomEggCursor" name="randomEggCursor" />
+                            <label class="form-check-label" for="randomEggCursor">Egg Cursor Randomized</label>
                         </div>
-                        <div class="col-auto form-check">
-                            <input class="form-check-input" type="radio" id="scoreRequirementExact" name="scoreRequirementType" value="exact" />
-                            <label class="form-check-label" for="scoreRequirementExact">Exactly</label>
+                        <div class="col-auto form-group">
+                            <label class="col-form-label" for="filledMouth">Mouth Always Filled With</label>
+                            <select class="form-control form-control-sm" id="filledMouth" name="filledMouth">
+                                <option value="" selected="selected">--</option>
+                                <option value="bubbles">Bubbles</option>
+                                <option value="seeds">Melon Seeds</option>
+                            </select>
                         </div>
-                        <div class="col-auto form-check">
-                            <input class="form-check-input" type="radio" id="scoreRequirementMaximum" name="scoreRequirementType" value="maximum" />
-                            <label class="form-check-label" for="scoreRequirementMaximum">At Most</label>
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-4 col-lg-3 col-xl-4 form-group">
-                        <input class="form-control mx-0" type="number" id="scoreRequirementScore" name="scoreRequirementScore" value="10"  min="0" max="100">
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-6 col-md-5 col-lg-4 mb-3">
-                    <h5>Health and the Environment</h5>
-
-                    <div class="col-auto form-group">
-                        <label class="col-form-label" for="floorModifier">Floor</label>
-                        <select class="form-control form-control-sm" id="floorModifier" name="floorModifier">
-                            <option value="" selected="selected">--</option>
-                            <option value="healVeryFast">Heals Very Quickly</option>
-                            <option value="healFast">Heals Quickly</option>
-                            <option value="healMedium">Heals Moderately</option>
-                            <option value="healSlow">Heals Slowly</option>
-                            <option value="damageSlow">Damages Slowly</option>
-                            <option value="damageMedium">Damages Moderately</option>
-                            <option value="damageFast">Damages Quickly</option>
-                            <option value="damageVeryFast">Damages Very Quickly</option>
-                        </select>
-                    </div>
-                    <div class="col-auto form-group">
-                        <label class="col-form-label" for="airModifier">Air</label>
-                        <select class="form-control form-control-sm" id="airModifier" name="airModifier">
-                            <option value="" selected="selected">--</option>
-                            <option value="healVeryFast">Heals Very Quickly</option>
-                            <option value="healFast">Heals Quickly</option>
-                            <option value="healMedium">Heals Moderately</option>
-                            <option value="healSlow">Heals Slowly</option>
-                            <option value="damageSlow">Damages Slowly</option>
-                            <option value="damageMedium">Damages Moderately</option>
-                            <option value="damageFast">Damages Quickly</option>
-                            <option value="damageVeryFast">Damages Very Quickly</option>
-                        </select>
-                    </div>
-                    <div class="col-auto form-group">
-                        <label class="col-form-label" for="coinModifier">Coins</label>
-                        <select class="form-control form-control-sm" id="coinModifier" name="coinModifier">
-                            <option value="" selected="selected">--</option>
-                            <option value="healTen">Heal 10 Stars</option>
-                            <option value="healFive">Heal 5 Stars</option>
-                            <option value="healTwo">Heal 2 Stars</option>
-                            <option value="healOne">Heal 1 Star</option>
-                            <option value="damageOne">Damage 1 Stars</option>
-                            <option value="damageTwo">Damage 2 Stars</option>
-                            <option value="damageFive">Damage 5 Stars</option>
-                            <option value="damageTen">Damage 10 Stars</option>
-                            <option value="damageTwenty">Damage 20 Stars</option>
-                            <option value="damageAll">Instantly Kill</option>
-                        </select>
-                    </div>
-                    <div class="col-auto form-group">
-                        <label class="col-form-label" for="flowerModifier">Flowers</label>
-                        <select class="form-control form-control-sm" id="flowerModifier" name="flowerModifier">
-                            <option value="" selected="selected">--</option>
-                            <option value="healTen">Heal 10 Stars</option>
-                            <option value="healFive">Heal 5 Stars</option>
-                            <option value="healTwo">Heal 2 Stars</option>
-                            <option value="healOne">Heal 1 Star</option>
-                            <option value="damageOne">Damage 1 Stars</option>
-                            <option value="damageTwo">Damage 2 Stars</option>
-                            <option value="damageFive">Damage 5 Stars</option>
-                            <option value="damageTen">Damage 10 Stars</option>
-                            <option value="damageTwenty">Damage 20 Stars</option>
-                            <option value="damageAll">Instantly Kill</option>
-                        </select>
-                    </div>
-                    <div class="col-auto form-check">
-                        <input class="form-check-input" type="checkbox" id="deathStarCounter" name="deathStarCounter" />
-                        <label class="form-check-label" for="deathStarCounter">Instant Death with 0 Stars</label>
-                    </div>
-                    <div class="col-auto form-check">
-                        <input class="form-check-input" type="checkbox" id="hardMode" name="hardMode" />
-                        <label class="form-check-label" for="hardMode">One-Hit Deaths</label>
-                    </div>
-                    <div class="col-auto form-check">
-                        <input class="form-check-input" type="checkbox" id="bouncyCastle" name="bouncyCastle" />
-                        <label class="form-check-label" for="bouncyCastle">Bouncy Castle</label>
-                    </div>
-                    <div class="col-auto form-check">
-                        <input class="form-check-input" type="checkbox" id="stickyGround" name="stickyGround" />
-                        <label class="form-check-label" for="stickyGround">Sticky Ground</label>
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-6 col-md-5 col-lg-4 mb-3">
-                    <h5>Egg and Mouth</h5>
-
-                    <div class="col-auto form-check">
-                        <input class="form-check-input" type="checkbox" id="nothingTongueable" name="nothingTongueable" />
-                        <label class="form-check-label" for="nothingTongueable">Nothing Is Tongueable</label>
-                    </div>
-                    <div class="col-auto form-check">
-                        <input class="form-check-input" type="checkbox" id="randomEggCursor" name="randomEggCursor" />
-                        <label class="form-check-label" for="randomEggCursor">Egg Cursor Randomized</label>
-                    </div>
-                    <div class="col-auto form-group">
-                        <label class="col-form-label" for="filledMouth">Mouth Always Filled With</label>
-                        <select class="form-control form-control-sm" id="filledMouth" name="filledMouth">
-                            <option value="" selected="selected">--</option>
-                            <option value="bubbles">Bubbles</option>
-                            <option value="seeds">Melon Seeds</option>
-                        </select>
                     </div>
                 </div>
             </div>
 
             <div class="row">
-                <div class="col-auto text-center">
+                <div class="col-12 text-center">
                     <button class="btn btn-primary" type="submit" onclick="generateRom()">Generate ROM</button>
                 </div>
             </div>
