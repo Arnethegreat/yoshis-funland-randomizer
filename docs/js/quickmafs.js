@@ -192,3 +192,21 @@ function offsetToSnesAddress(x) {
     // TODO: Add dickbutt addressing support
     return ((x & 0xFF8000) << 1) + (x & 0xFFFF) + ((x & 0x8000) ? 0 : 0x8000);
 }
+
+function getChecksum(rom) {
+	var checksum = 0;
+	for (var i = 0; i < rom.length; ++i)
+	{
+		checksum += rom[i];
+		checksum &= 0xFFFF;
+	}
+	return checksum;
+}
+
+function fixChecksum(rom) {
+	var checksum = getChecksum(rom);
+
+	// checksum
+	rom.writeBytes(2, 0x7FDE, checksum);
+	rom.writeBytes(2, 0x7FDC, checksum ^ 0xFFFF);
+}
