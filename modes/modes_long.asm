@@ -50,6 +50,57 @@ poison_flowers:
 
 ;=================================
 
+boss_splosion_check:
+    PHX
+    PHY
+    JSR calculate_score
+    PLY
+    PLX
+
+    PHA
+
+    LDA !required_score_type
+    CMP #$8000
+    BEQ .min
+    CMP #$0080
+    BEQ .max
+    CMP #$0008
+    BEQ .eq
+
+.min
+    PLA
+    CMP !required_score
+    BCC .failed_req
+    BRA .ret
+.max
+    PLA
+; DEC so max score is allowed
+    DEC A
+    CMP !required_score
+    BCS .failed_req
+    BRA .ret
+.eq
+    PLA
+    CMP !required_score
+    BNE .failed_req
+    BRA .ret
+
+
+
+.failed_req
+; die die die die
+    LDA #$0028 ; lava death
+    JSL $04F6E2
+    STZ !s_player_disable_flag
+    STZ !s_sprite_disable_flag
+
+.ret
+    LDA #$0800                                ; $02DF61 |
+    STA !s_spr_gsu_morph_2_lo,x               ; $02DF64 |
+    RTL
+
+;=================================
+
 goal_ring_check:
     PHX
     PHY

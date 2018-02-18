@@ -109,7 +109,7 @@ walljumps:
     RTS
 
 ;=================================
-
+; needs proper rewrite
 hard_mode:
     LDA $61B3 ; baby mario state
     CMP #$80
@@ -126,15 +126,32 @@ hard_mode:
 
 death_star_counter:
     REP #$20
+
+    LDA !r_game_mode
+    CMP #$000F
+    BNE .clear_death_flag
+
+    LDA !death_triggered_flag
+    BNE .check_states
+    LDA !s_player_state
+    BNE .clear_death_flag
     LDA $03B6
     CMP #$0002 
     BCS .ret
+.check_states
+    LDA #$0001
+    STA !death_triggered_flag
     LDA !s_player_state
+    ORA !s_player_disable_flag
+    ORA !s_sprite_disable_flag
     BNE .ret
 ; carry out death if star counter = 0 or 1
+.death
     LDA #$0028 ; lava death
     JSL $04F6E2
 
+.clear_death_flag
+    STZ !death_triggered_flag
 .ret
     SEP #$20
     RTS
@@ -229,16 +246,6 @@ reverse_control_mode:
 
 ;=================================
 
-; ice physics how??
-; IMPOSSIBLE
-;ground_physics:
-;    LDA #$03
-;    STA $60FA
-;.ret
-;    RTS
-
-;=================================
-
 random_cursor:
     JSL $008408
     REP #$20
@@ -319,6 +326,8 @@ no_flutter:
 poison_air:
     REP #$20
     LDA !s_player_state
+    ORA !s_player_disable_flag
+    ORA !s_sprite_disable_flag
     BNE .ret
     LDA !s_player_tile_collision
     AND #$0007
@@ -363,6 +372,8 @@ poison_air:
 floor_is_lava:
     REP #$20
     LDA !s_player_state
+    ORA !s_player_disable_flag
+    ORA !s_sprite_disable_flag
     BNE .ret
     LDA !s_player_tile_collision
     AND #$0007
@@ -412,10 +423,14 @@ enable_poison_flower:
 .ret
     RTS
 
+
+; spawns lava particle +
 test_spawn:
+; add so on poison air its offset less
+
     LDA #$001F
     STA !r_starcounter_timer
-    LDA #$01E0                                ; $02ABB7 |
+    LDA #$01D6                                ; $02ABB7 | $01E0 default
     JSL $008B21                               ; $02ABBA |
     LDA !s_player_x                           ; $02ABBE |
     ; CLC                                       ; $02ABC1 |
@@ -423,28 +438,29 @@ test_spawn:
     STA $70A2,y                               ; $02ABC5 |
     LDA !s_player_y                           ; $02ABC8 |
     CLC                                       ; $02ABCB |
-    ADC #$0018                                ; $02ABCC |
+    ADC #$0016                                ; $02ABCC |
     STA $7142,y                               ; $02ABCF |
-    LDA #$0004                                ; $0DC246 |\
+    LDA #$0006                                ; $0DC246 |\
     STA $7782,y                               ; $0DC249 |/ Animation duration
+    LDA #$0003
     STA $7E4C,y                               ; $0DC24C |
 
-    LDA $60F4
-    BPL +
-    LDA #$0080
+    LDA $60C4
+    BEQ +
+    LDA #$0100
     BRA .store
 +
-    LDA #$FF80
+    LDA #$FF00
 .store
-    STA $71E0,y                               ; $0DC251 |/  Set ambient sprite x-speed
-    LDA #$0030                                ; $0DC254 |\
-    STA $71E2,y                               ; $0DC257 |/  Ambient sprite y-speed
-    LDA $60F4                                 ; $0DC25A |\
-    EOR #$0002                                ; $0DC25D | | Set ambient sprite direction same as tap-tap
-    STA $73C0,y                               ; $0DC260 |/
-    LDY #$04                                  ; $0DC263 |
-    LDA #$0006                                ; $0DC265 | animation frame
-    LDA #$0017                                ; $0DC2CF |\ play sound #$002E
-    JSL $0085D2                               ; $0DC2D2 |/
+    STA $71E0,y                               ;|/  Set ambient sprite x-speed
+    LDA #$0080                                ;|\
+    STA $71E2,y                               ;|/  Ambient sprite y-speed
+    LDA $60C4                                 ;|\
+    EOR #$0002                                ;| | Set ambient sprite direction same as tap-tap
+    STA $73C0,y                               ;|/
+    LDY #$04                                  ;|
+    ; LDA #$0006                                ;| animation frame
+    LDA #$0055                                ;|\ play sound #$002E
+    JSL $0085D2                               ;|/ Nathan loves this feature
 .ret
     RTS

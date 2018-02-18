@@ -15,4 +15,7 @@ org $0EB4BC
 org $02A91B
     autoclean JML goal_ring_check
     
-
+; boss explosion, check if u got da score
+org $02DF61
+    autoclean JSL boss_splosion_check
+    NOP #2

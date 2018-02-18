@@ -1,4 +1,6 @@
 org $238000
+
+!level_mode_settings_endmarker = #$8089
 ; vars
 !temp_01 = $140A
 !temp_02 = $140C
@@ -8,6 +10,8 @@ org $238000
 !original_world = $1412
 
 !s_player_x_speed_megaprev = $1414
+
+!death_triggered_flag = $1416
 
 !floor_timer = $1440
 !air_timer = $1442
@@ -39,12 +43,6 @@ org $238000
 !active_modes_amount = $1800
 !active_modes_pointers = $1802
 
-
-;=================================
-;=================================
-;=================================
-!level_mode_settings_endmarker = #$8089
-
 modes_pointers:
     dw require_score                   ; 00 (1-byte) _min
     dw drunk_mode                      ; 02
@@ -66,7 +64,6 @@ modes_pointers:
     dw enable_poison_coin              ; 22 (2-bytes)
     dw enable_poison_flower            ; 24 (2-bytes)
     dw walljumps                       ; 26
-
 
 ;=================================
 ;=================================
@@ -273,3 +270,7 @@ dw !level_mode_settings_endmarker
 ; Score & Controller
 dw !level_mode_settings_endmarker
 dw !level_mode_settings_endmarker
+
+;=================================
+;=================================
+;=================================
