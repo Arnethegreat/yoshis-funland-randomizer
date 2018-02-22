@@ -3,15 +3,16 @@ var labelCounter = 0
 var labelStack = []
 
 function getOps() {
+    var curLabelCounter = String(labelStack.slice(-1)[0])
     var bfToAsmTable = {
-        ">": "\nINC !datapointer",
-        "<": "\nDEC !datapointer",
-        "+": "\nINC (!datapointer)",
-        "-": "\nDEC (!datapointer)",
-        ".": "\nNOP # todo",
-        ",": "\nNOP # todo",
-        "[": "\nLDA (!datapointer)" + "\nBEQ label_b" + String(labelStack.slice(-1)[0]) + "\nlabel_a" + String(labelStack.slice(-1)[0]) + ":",
-        "]": "\nLDA (!datapointer)" + "\nBNE label_a" + String(labelStack.slice(-1)[0]) + "\nlabel_b" + String(labelStack.slice(-1)[0]) + ":"
+        ">": "\n  INC !datapointer",
+        "<": "\n  DEC !datapointer",
+        "+": "\n  INC (!datapointer)",
+        "-": "\n  DEC (!datapointer)",
+        ".": "\n  NOP # todo",
+        ",": "\n  NOP # todo",
+        "[": "\n  LDA (!datapointer)" + "\n  BNE label_a" + curLabelCounter + "\n  JMP label_b" + curLabelCounter + "\nlabel_a" + curLabelCounter + ":",
+        "]": "\n  LDA (!datapointer)" + "\n  BEQ label_b" + curLabelCounter + "\n  JMP label_a" + curLabelCounter + "\nlabel_b" + curLabelCounter + ":"
     }
     return bfToAsmTable
 }
@@ -31,6 +32,9 @@ function translateBrainfuck() {
         }
         var lookup = getOps()
         var opcode = lookup[character]
+
+        if (typeof opcode === "undefined") { continue }
+
         BrainfuckOutput += opcode;
         if (character == "]") {
             labelStack.pop()
