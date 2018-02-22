@@ -21,6 +21,9 @@ org $01C14B
 org $00B444
     autoclean JSL restore_world
 
+org $17A694
+    autoclean JML fix_start_select_return
+
 freecode $FF
 
 ;=================================
@@ -89,14 +92,44 @@ fix_start_select:
     LDX $021A
     LDA do_custom_level_order
     BEQ .ret
-    CMP #$0B
-    BNE .ret
+    CPX #$0B
+    BEQ .ret
     LDX !original_level
 .ret
     LDA $0222,x 
     RTL
 
 ;=================================
+
+fix_start_select_return:
+
+    LDA do_custom_level_order
+    BNE .fix
+
+    SBC $17E198,x
+    JML $17A698
+
+.fix
+    LDA !original_level
+    STA !r_cur_stage
+    LDX !original_world
+    STX !r_cur_world
+
+    SBC $17E198,x                             ; $17A694 |
+    CMP #$08                                  ; $17A698 |
+    BCC .ret                                  ; $17A69A |
+    LDA $17E198,x                             ; $17A69C |
+    STA !r_cur_stage                          ; $17A6A0 |
+    STA !original_level
+    ; LDA !r_cur_world
+    ; STA !original_world
+    LDA $0000                                 ; $17A6A3 |
+
+.ret
+    JML $17A6A6
+
+;=================================
+; Check if beaten new world?
 
 restore_world:
     LDA #$4C 
@@ -109,7 +142,7 @@ restore_world:
     RTL
 
 ;=================================
-; walk through level modes and count end markers ($FF)
+; walk through level modes and count end markers ($8089)
 ; until matching with current level number
 
 get_level_settings:
