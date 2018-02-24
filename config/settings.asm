@@ -12,6 +12,7 @@ org $238000
 !s_player_x_speed_megaprev = $1414
 
 !death_triggered_flag = $1416
+!bossdeath_triggered_flag = $1418
 
 !floor_timer = $1440
 !air_timer = $1442

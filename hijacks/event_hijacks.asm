@@ -19,3 +19,8 @@ org $02A91B
 org $02DF61
     autoclean JSL boss_splosion_check
     NOP #2
+
+; hard code fix for froggy
+org $0EEB53
+    autoclean JSL froggy_fix
+    NOP #2

@@ -89,7 +89,10 @@ boss_splosion_check:
 
 .failed_req
 ; die die die die
+    LDA #$0001
+    STA !bossdeath_triggered_flag
     LDA #$0028 ; lava death
+    STA !s_player_state
     JSL $04F6E2
     STZ !s_player_disable_flag
     STZ !s_sprite_disable_flag
@@ -154,6 +157,7 @@ goal_ring_check:
     SEC                                       ; $02A91E |
     JML $02A91F
 
+;=================================
 
 calculate_score:
     LDA !r_stars_amount
@@ -196,3 +200,20 @@ calculate_score:
 
 .ret
     RTS
+
+;=================================
+;=================================
+;=================================
+
+froggy_fix:
+    LDA !bossdeath_triggered_flag
+    BEQ .ret
+
+    LDA #$0028
+    STA !s_player_state
+    RTL
+
+.ret
+    LDA #$001A                                ; $02D9CA 
+    STA !s_player_state
+    RTL

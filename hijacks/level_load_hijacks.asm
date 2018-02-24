@@ -148,6 +148,8 @@ get_level_settings:
     STZ !air_timer
 
     STZ !death_triggered_flag
+    STZ !bossdeath_triggered_flag
+    
     STZ !do_poison_coins
     STZ !do_poison_flowers
     STZ !poison_coins_amount
