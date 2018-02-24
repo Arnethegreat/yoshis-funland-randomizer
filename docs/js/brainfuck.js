@@ -21,7 +21,7 @@ function getOps() {
 
 function translateBrainfuck() {
     var BrainfuckInput = document.getElementById("bfInput").value
-    var BrainfuckOutput = ""
+    var BrainfuckOutput = "!datapointer = $0000"
     labelCounter = 0
     labelStack = []
     for (var i = 0; i < BrainfuckInput.length; i++) {

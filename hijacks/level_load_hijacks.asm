@@ -1,31 +1,74 @@
-
+; Restore before score save
 org $01BEC2
     nop
     nop
-    autoclean JSL restore_level
+    autoclean JSL restore_level_save
 
+; Prepare Overworld
+org $17A5D2
+    nop
+    autoclean JSL restore_level_map
+
+; World Map on choosing level
 org $17B47F
     nop
     nop
     autoclean JSL prepare_level_settings
 
-;org $17E72C
-;    autoclean JSL set_new_level
-
+; Gamemode 0F pause menu check
 org $01C14B
     nop
     nop
     autoclean JSL fix_start_select
 
-
-org $00B444
-    autoclean JSL restore_world
-
-org $17A694
-    autoclean JML fix_start_select_return
+; Beat World Cutscene (world increase)
+org $17A9DE
+    nop
+    nop
+    autoclean JSL set_world_increase
 
 freecode $FF
 
+;================================
+
+set_world_increase:
+    LDA do_custom_level_order
+    BEQ .ret
+    INC !original_world
+    INC !original_world 
+.ret
+    INC $0218
+    INC $0218
+    RTL
+
+;================================
+
+restore_level_map:
+    LDA do_custom_level_order
+    BEQ .ret
+    LDA !original_level
+    STA $021A
+    LDA !original_world
+    STA $0218
+.ret
+    LDX #$17
+    STX $4304
+    RTL
+
+;=================================
+
+restore_level_save:
+    LDA do_custom_level_order
+    BEQ .ret
+    LDA !original_level
+    STA $021A
+.ret
+    LDX $021A
+    LDA $030C
+    RTL
+
+;=================================
+;=================================
 ;=================================
 
 ; 8-bit A/X/Y
@@ -39,7 +82,7 @@ prepare_level_settings:
     SEP #$30
     
 
-set_new_level:
+.set_new_level
 
     LDA do_custom_level_order
     BEQ .ret
@@ -76,17 +119,6 @@ set_new_level:
 
 ;=================================
 
-restore_level:
-    LDA do_custom_level_order
-    BEQ .ret
-    LDA !original_level
-    STA $021A
-.ret
-    LDX $021A
-    LDA $030C
-    RTL
-
-;=================================
 
 fix_start_select:
     LDX $021A
@@ -99,47 +131,6 @@ fix_start_select:
     LDA $0222,x 
     RTL
 
-;=================================
-
-fix_start_select_return:
-
-    LDA do_custom_level_order
-    BNE .fix
-
-    SBC $17E198,x
-    JML $17A698
-
-.fix
-    LDA !original_level
-    STA !r_cur_stage
-    LDX !original_world
-    STX !r_cur_world
-
-    SBC $17E198,x                             ; $17A694 |
-    CMP #$08                                  ; $17A698 |
-    BCC .ret                                  ; $17A69A |
-    LDA $17E198,x                             ; $17A69C |
-    STA !r_cur_stage                          ; $17A6A0 |
-    STA !original_level
-    ; LDA !r_cur_world
-    ; STA !original_world
-    LDA $0000                                 ; $17A6A3 |
-
-.ret
-    JML $17A6A6
-
-;=================================
-; Check if beaten new world?
-
-restore_world:
-    LDA #$4C 
-    STA $14
-    LDA do_custom_level_order
-    BEQ .ret
-    LDA !original_world
-    STA $0218
-.ret
-    RTL
 
 ;=================================
 ; walk through level modes and count end markers ($8089)
