@@ -9,12 +9,23 @@
         <script src="js/lib/seedrandom.min.js"></script>
         <script src="js/lib/jquery-3.3.1.min.js" type="text/javascript"></script>
         <script src="js/lib/bootstrap.min.js" type="text/javascript"></script>
+        <script src="js/constants.js" type="text/javascript"></script>
         <script src="js/quickmafs.js" type="text/javascript"></script>
         <script src="js/settings.js" type="text/javascript"></script>
     </head>
     <body>
         <div class="container">
             <h1 class="mb-4">Yoshi's Funland Randomizer</h1>
+
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Seed</span>
+                </div>
+                <input class="" type="number" id="randomSeed" name="randomSeed" value="0" min="0" max="100000000">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" onclick="generateSeed()" type="submit">Random</button>
+                </div>
+            </div>
 
             <div class="row">
                 <div class="col-12 col-sm-6 col-md-5 col-lg-4 mb-3">
@@ -25,16 +36,15 @@
                             <input class="form-check-input" type="checkbox" id="randomizeLevelOrder" name="randomizeLevelOrder" checked="checked" />
                             <label class="form-check-label" for="randomizeLevelOrder">Randomize Level Order</label>
                         </div>
-
-                        <div class="input-group input-group-sm mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">Seed</span>
-                            </div>
-                            <input class="" type="number" id="randomSeed" name="randomSeed" value="0" min="0" max="100000000">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" onclick="generateSeed()" type="button">Random</button>
-                            </div>
+                        <div class="col-auto form-check">
+                            <input class="form-check-input" type="checkbox" id="keepCastleOrder" name="keepCastleOrder" checked="checked" />
+                            <label class="form-check-label" for="keepCastleOrder">Keep Fortress & Castle Order</label>
                         </div>
+                        <div class="col-auto form-check">
+                            <input class="form-check-input" type="checkbox" id="includeExtras" name="includeExtras"/>
+                            <label class="form-check-label" for="includeExtras">Include Extras as Normal levels</label>
+                        </div>
+
                     </div>
 
                     <div class="mb-3">

@@ -37,22 +37,33 @@ function randomizeLevelOrder(rom, options) {
         bonuses: [ 0x09, 0x15, 0x21, 0x2D, 0x39, 0x45 ]
     };
 
+
     var customLevelOrder = [];
 
+    if (!options.keepCastleOrder) {
+        levelIndexes.normals = levelIndexes.normals.concat(levelIndexes.forts);
+        levelIndexes.normals = levelIndexes.normals.concat(levelIndexes.castles);
+    }
     if (options.includeExtras) {
-        // we'll get here later
+        levelIndexes.normals = levelIndexes.normals.concat(levelIndexes.extras);
     }
 
     levelIndexes.castles = shuffle(levelIndexes.castles);
     levelIndexes.forts = shuffle(levelIndexes.forts);
     levelIndexes.normals = shuffle(levelIndexes.normals);
+    levelIndexes.extras = shuffle(levelIndexes.extras);
 
     for (var world = 1; world <= 6; world++) {
         customLevelOrder.push(levelIndexes.normals.shift()); // x-1
         customLevelOrder.push(levelIndexes.normals.shift()); // x-2
         customLevelOrder.push(levelIndexes.normals.shift()); // x-3
 
-        customLevelOrder.push(levelIndexes.forts.shift()); // x-4, specifically use a fort
+        if (options.keepCastleOrder) {
+            customLevelOrder.push(levelIndexes.forts.shift()); // x-4, specifically use a fort
+        }
+        else {
+            customLevelOrder.push(levelIndexes.normals.shift())
+        }
 
         customLevelOrder.push(levelIndexes.normals.shift()); // x-5
         customLevelOrder.push(levelIndexes.normals.shift()); // x-6
@@ -61,11 +72,19 @@ function randomizeLevelOrder(rom, options) {
         if (world == 6) {
             customLevelOrder.push(levelIndexes.bowser); // 6-8, always put 6-8 at the end
         }
-        else {
+        else if (options.keepCastleOrder) {
             customLevelOrder.push(levelIndexes.castles.shift()); // x-8, specifically use a castle
         }
+        else {
+            customLevelOrder.push(levelIndexes.normals.shift());
+        }
 
-        customLevelOrder.push(levelIndexes.extras.shift()); // x-E
+        if (!options.includeExtras) {
+            customLevelOrder.push(levelIndexes.extras.shift()); // x-E
+        }
+        else {
+            customLevelOrder.push(levelIndexes.normals.shift());
+        }
         customLevelOrder.push(levelIndexes.bonuses.shift()); // x-B
     }
 
@@ -93,6 +112,8 @@ function generateSeed() {
 function getOptions() {
     return {
         randomizeLevelOrder: $('input[name=randomizeLevelOrder]').is(':checked'),
+        includeExtras: $('input[name=includeExtras]').is(':checked'),
+        keepCastleOrder: $('input[name=keepCastleOrder]').is(':checked'),
 
         modes: {
             scoreRequirementMinimum: {
@@ -203,60 +224,6 @@ function getOptions() {
     };
 }
 
-var WORLD_MAPS = 0x118050;
-var LEVEL_OFFSETS = [
-//   1   2   3   4   5   6   7   8   E   B
-     1,  2,  3,  4,  5,  6,  7,  8,  9, 10, // World 1
-    13, 14, 15, 16, 17, 18, 19, 20, 21, 22, // World 2
-    25, 26, 27, 28, 29, 30, 31, 32, 33, 34, // World 3
-    37, 38, 39, 40, 41, 42, 43, 44, 45, 46, // World 4
-    49, 50, 51, 52, 53, 54, 55, 56, 57, 58, // World 5
-    61, 62, 63, 64, 65, 66, 67, 68, 69, 70  // World 6
-];
-var LEVEL_SETTINGS = 0x118099;
-var LEVEL_SETTINGS_ENDMARKER = [ 0x89, 0x80 ]; // this is reversed because of its endianness
-
-var DMG_TICKS_FRAMES = 0x0008;
-
-var HEALTH_MODIFIERS = {
-    healVeryFast: 0xFFF0,
-    healFast: 0xFFF6,
-    healMedium: 0xFFFA,
-    healSlow: 0xFFFE,
-    damageSlow: 0x0002,
-    damageMedium: 0x0006,
-    damageFast: 0x000A,
-    damageVeryFast: 0x0010,
-
-    healTen: 0x0064,
-    healFive: 0x0032,
-    healTwo: 0x0014,
-    healOne: 0x000A,
-    damageOne: 0xFFF6,
-    damageTwo: 0xFFEC,
-    damageFive: 0xFFCE,
-    damageTen: 0xFF9C,
-    damageTwenty: 0xFF38,
-    damageAll: 0xFED4
-};
-
-var MOUTH_MODIFIERS = {
-    bubbles: 0x02,
-    seeds: 0x03
-};
-
-var BOOST_MODIFIERS = {
-    accelerateSlow: 0x008,
-    accelerateMedium: 0x010,
-    accelerateFast: 0x020,
-    accelerateVeryFast: 0x040,
-
-    maximumSpeedSlow: 0x400,
-    maximumSpeedMedium: 0x600,
-    maximumSpeedFast: 0x800,
-    maximumSpeedVeryFast: 0xA00,
-    maximumSpeedTooFast: 0xC00
-};
 
 function generateRom() {
     var options = getOptions();
