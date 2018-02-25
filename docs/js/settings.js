@@ -1,29 +1,6 @@
 "use strict"
 
 
-/**
- * Shuffles array in place.
- * @param {Array} a items An array containing the items.
- */
-function shuffle(array) {
-    let counter = array.length;
-
-    // While there are elements in the array
-    while (counter > 0) {
-        // Pick a random index
-        let index = Math.floor(Math.random() * counter);
-
-        // Decrease counter by 1
-        counter--;
-
-        // And swap the last element with it
-        let temp = array[counter];
-        array[counter] = array[index];
-        array[index] = temp;
-    }
-
-    return array;
-}
 
 function getEnabledModes(options) {
     var enabledModes = [];
@@ -40,6 +17,10 @@ function getEnabledModes(options) {
 }
 
 function randomizeLevelOrder(rom, options) {
+    // Set Random Seed
+    var seed = document.getElementById("randomSeed").value;
+    Math.seedrandom(seed);
+
     var levelIndexes = {
         bowser: 0x43,
         castles: [ 0x07, 0x13, 0x1F, 0x2B, 0x37 ], // not including King Bowser's Castle because it's a special case
@@ -91,6 +72,7 @@ function randomizeLevelOrder(rom, options) {
     customLevelOrder.forEach(function(level, i) {
         rom[WORLD_MAPS + LEVEL_OFFSETS[i]] = level;
     });
+    console.log(customLevelOrder)
 }
 
 let randomBinary = function() {
@@ -101,41 +83,12 @@ let randomInteger = function(max) {
     return Math.floor(Math.random() * (max + 1));
 }
 
-
 function generateSeed() {
-    document.getElementById("randomSeed").value = randomInteger(1000000000);
+    var seed = Math.seedrandom();
+    seed = randomInteger(100000000)
+    document.getElementById("randomSeed").value = seed;
 }
 
-
-/* Two options
- * 1. Get FileSaver.js from here
- *     https://github.com/eligrey/FileSaver.js/blob/master/FileSaver.min.js -->
- *     <script src="FileSaver.min.js" />
- *
- * Or
- *
- * 2. If you want to support only modern browsers like Chrome, Edge, Firefox, etc., 
- *    then a simple implementation of saveAs function can be:
- */
-function saveAs(blob, fileName) {
-    var url = window.URL.createObjectURL(blob);
-
-    var anchorElem = document.createElement("a");
-    anchorElem.style = "display: none";
-    anchorElem.href = url;
-    anchorElem.download = fileName;
-
-    document.body.appendChild(anchorElem);
-    anchorElem.click();
-
-    document.body.removeChild(anchorElem);
-
-    // On Edge, revokeObjectURL should be called only after
-    // a.click() has completed, atleast on EdgeHTML 15.15048
-    setTimeout(function () {
-        window.URL.revokeObjectURL(url);
-    }, 1000);
-}
 
 function getOptions() {
     return {
@@ -250,7 +203,7 @@ function getOptions() {
     };
 }
 
-var WORLD_MAPS = 0x118028;
+var WORLD_MAPS = 0x118050;
 var LEVEL_OFFSETS = [
 //   1   2   3   4   5   6   7   8   E   B
      1,  2,  3,  4,  5,  6,  7,  8,  9, 10, // World 1
@@ -260,7 +213,7 @@ var LEVEL_OFFSETS = [
     49, 50, 51, 52, 53, 54, 55, 56, 57, 58, // World 5
     61, 62, 63, 64, 65, 66, 67, 68, 69, 70  // World 6
 ];
-var LEVEL_SETTINGS = 0x118071;
+var LEVEL_SETTINGS = 0x118099;
 var LEVEL_SETTINGS_ENDMARKER = [ 0x89, 0x80 ]; // this is reversed because of its endianness
 
 var DMG_TICKS_FRAMES = 0x0008;
@@ -336,6 +289,7 @@ function generateRom() {
 }
 
 function generateLevelSettings(rom, options) {
+
     var levelSettings = [];
     var globalModes = getEnabledModes(options);
 
@@ -356,7 +310,6 @@ function generateLevelSettings(rom, options) {
             levelSettings = levelSettings.concat(LEVEL_SETTINGS_ENDMARKER);
         }
     });
-
     rom.set(levelSettings, LEVEL_SETTINGS);
 }
 

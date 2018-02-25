@@ -24,3 +24,10 @@ org $02DF61
 org $0EEB53
     autoclean JSL froggy_fix
     NOP #2
+
+
+; Stars hackery maybe
+; org $00E2CF
+    ; CMP !max_stars_regen
+; org $00E2DA
+    ; CMP !frame_ticks_regen

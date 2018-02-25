@@ -33,48 +33,6 @@ function hexToBits(x) {
 
 function bitset(x, mask) { return (x & mask) == mask; }
 
-function Random(seed) { this.seed = Math.floor(seed || (Math.random() * 0xFFFFFFFF)) % 0xFFFFFFFF; }
-
-Random.prototype.clone = function () { return new Random(this.seed); }
-
-Random.prototype.pull = function (n) { while (n--) this.next(); }
-
-Random.prototype.next = function (z) { return this.seed = ((214013 * this.seed + 2531011) & 0x7fffffff) >> 16; }
-
-Random.prototype.nextFloat = function () { return this.next() / 0x7fff; }
-
-Random.prototype.flipCoin = function (x) { return this.nextFloat() < x; }
-
-// Box-Muller transform, converts uniform distribution to normal distribution
-// depends on uniformity of nextFloat(), which I'm not confident of
-Random.prototype.nextGaussian = function () {
-    var u = this.nextFloat(), v = this.nextFloat();
-    return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
-}
-
-Random.prototype.nextInt = function (z) { return (this.nextFloat() * z) | 0; }
-
-Random.prototype.nextIntRange = function (a, b) { return a + this.nextInt(b - a); }
-
-Random.prototype.from = function (arr) { return arr[this.nextInt(arr.length)]; }
-
-Random.prototype.fromWeighted = function (arr) {
-    if (!arr._weight) {
-        arr._weight = 0;
-        for (var i = 0; i < arr.length; ++i)
-            arr._weight += arr[i].weight || 1;
-    }
-
-    var x = this.nextFloat() * arr._weight;
-    for (var i = 0; i < arr.length; ++i)
-        if ((x -= arr[i].weight || 1) < 0.0) return arr[i];
-    return arr[0];
-}
-
-Random.prototype.draw = function (arr) {
-    var which = this.nextInt(arr.length);
-    return arr.splice(which, 1)[0];
-}
 
 
 Array.prototype.shuffle = function (random) {
@@ -112,6 +70,7 @@ Number.prototype.toHex = function (n, p) {
 Number.prototype.toPrintHex = function (n) { return '0x' + this.toHex(n).toUpperCase(); }
 
 function ROMLogger(rom) { this.rom = rom; }
+
 
 ROMLogger.prototype.start = function () {
     this.orig = new Uint8Array(this.rom.byteLength);
@@ -209,4 +168,59 @@ function fixChecksum(rom) {
 	// checksum
 	rom.writeBytes(2, 0x7FDE, checksum);
 	rom.writeBytes(2, 0x7FDC, checksum ^ 0xFFFF);
+}
+
+/**
+* Shuffles array in place.
+* @param {Array} a items An array containing the items.
+ */
+function shuffle(array) {
+    let counter = array.length;
+
+    // While there are elements in the array
+    while (counter > 0) {
+        // Pick a random index
+        let index = Math.floor(Math.random() * counter);
+
+        // Decrease counter by 1
+        counter--;
+
+        // And swap the last element with it
+        let temp = array[counter];
+        array[counter] = array[index];
+        array[index] = temp;
+    }
+
+    return array;
+}
+
+
+/* Two options
+ * 1. Get FileSaver.js from here
+ *     https://github.com/eligrey/FileSaver.js/blob/master/FileSaver.min.js -->
+ *     <script src="FileSaver.min.js" />
+ *
+ * Or
+ *
+ * 2. If you want to support only modern browsers like Chrome, Edge, Firefox, etc., 
+ *    then a simple implementation of saveAs function can be:
+ */
+function saveAs(blob, fileName) {
+    var url = window.URL.createObjectURL(blob);
+
+    var anchorElem = document.createElement("a");
+    anchorElem.style = "display: none";
+    anchorElem.href = url;
+    anchorElem.download = fileName;
+
+    document.body.appendChild(anchorElem);
+    anchorElem.click();
+
+    document.body.removeChild(anchorElem);
+
+    // On Edge, revokeObjectURL should be called only after
+    // a.click() has completed, atleast on EdgeHTML 15.15048
+    setTimeout(function () {
+        window.URL.revokeObjectURL(url);
+    }, 1000);
 }

@@ -65,6 +65,26 @@ modes_pointers:
     dw enable_poison_coin              ; 22 (2-bytes)
     dw enable_poison_flower            ; 24 (2-bytes)
     dw walljumps                       ; 26
+    dw placeholder                     ; 28
+    dw placeholder                     ; 2A
+    dw placeholder                     ; 2C
+    dw placeholder                     ; 2E
+    dw placeholder                     ; 30
+    dw placeholder                     ; 32
+    dw placeholder                     ; 34
+    dw placeholder                     ; 36
+    dw placeholder                     ; 38
+    dw placeholder                     ; 3A
+    dw placeholder                     ; 3C
+    dw placeholder                     ; 3E
+    dw placeholder                     ; 40
+    dw placeholder                     ; 42
+    dw placeholder                     ; 44
+    dw placeholder                     ; 46
+    dw placeholder                     ; 48
+    dw placeholder                     ; 4A
+    dw placeholder                     ; 4C
+    dw placeholder                     ; 4E
 
 ;=================================
 ;=================================

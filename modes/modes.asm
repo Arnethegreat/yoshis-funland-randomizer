@@ -227,8 +227,8 @@ boost_mode:
 
 ;=================================
 
-placeholder_1:
-    
+placeholder:
+    NOP
 
 .ret
     RTS
