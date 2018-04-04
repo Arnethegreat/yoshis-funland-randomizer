@@ -118,6 +118,7 @@ function getOptions() {
         modes: {
             scoreRequirementMinimum: {
                 code: 0x00,
+                description: "Require Minimum Score",
 
                 enabled: ($('input[name=scoreRequirementType]:checked').val() == 'minimum'),
                 parameters: littleEndianToBytes(parseInt($('input[name=scoreRequirementScore]').val()), 1)
@@ -190,7 +191,7 @@ function getOptions() {
                 code: 0x1A,
 
                 enabled: ($('select[name=airModifier]').val() != ''),
-                parameters: [].concat(littleEndianToBytes(DMG_TICKS_FRAMES, 2)).concat(littleEndianToBytes(HEALTH_MODIFIERS[$('select[name=airModifier]').val()], 2))
+                parameters: [].concat(littleEndianToBytes(DMG_TICKS_FRAMES, 2)).concat(littleEndianToBytes(HEALTH_MOD_RATE[$('select[name=airModifier]').val()], 2))
             },
             noFlutters: {
                 code: 0x1C,
@@ -206,19 +207,19 @@ function getOptions() {
                 code: 0x20,
 
                 enabled: ($('select[name=floorModifier]').val() != ''),
-                parameters: [].concat(littleEndianToBytes(DMG_TICKS_FRAMES, 2)).concat(littleEndianToBytes(HEALTH_MODIFIERS[$('select[name=floorModifier]').val()], 2))
+                parameters: [].concat(littleEndianToBytes(DMG_TICKS_FRAMES, 2)).concat(littleEndianToBytes(HEALTH_MOD_RATE[$('select[name=floorModifier]').val()], 2))
             },
             coinModifier: {
                 code: 0x22,
 
                 enabled: ($('select[name=coinModifier]').val() != ''),
-                parameters: littleEndianToBytes(HEALTH_MODIFIERS[$('select[name=coinModifier]').val()], 2)
+                parameters: littleEndianToBytes(HEALTH_MOD_AMOUNT[$('select[name=coinModifier]').val()], 2)
             },
             flowerModifier: {
                 code: 0x24,
 
                 enabled: ($('select[name=flowerModifier]').val() != ''),
-                parameters: littleEndianToBytes(HEALTH_MODIFIERS[$('select[name=flowerModifier]').val()], 2)
+                parameters: littleEndianToBytes(HEALTH_MOD_AMOUNT[$('select[name=flowerModifier]').val()], 2)
             }
         }
     };
