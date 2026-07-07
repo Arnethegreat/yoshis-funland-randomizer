@@ -1,30 +1,65 @@
-"use strict"
+"use strict";
 
+// The prefix for the global settings panel (rendered by modes-ui.js on DOMContentLoaded)
+var GLOBAL_PREFIX = 'global';
 
+// ---------------------------------------------------------------------------
+// Initialise the global panel controls
+// ---------------------------------------------------------------------------
 
-function getEnabledModes(options) {
-    var enabledModes = [];
+document.addEventListener('DOMContentLoaded', function() {
+    var globalControls = document.getElementById('globalModeControls');
+    if (globalControls) {
+        renderModeControls(GLOBAL_PREFIX, globalControls);
+    }
+    checkScoreRequirementType(); // legacy compat (no-op now, kept for safety)
+});
 
-    Object.keys(options.modes).forEach(function(modeName) {
-        var mode = options.modes[modeName];
+// ---------------------------------------------------------------------------
+// Legacy stubs — kept so any existing external calls don't break
+// ---------------------------------------------------------------------------
 
-        if (mode.enabled) {
-            enabledModes.push(options.modes[modeName]);
-        }
-    });
+function checkScoreRequirementType() {}
+function checkSpeedBoost() {}
 
-    return enabledModes;
+// ---------------------------------------------------------------------------
+// Seed helpers
+// ---------------------------------------------------------------------------
+
+function generateSeed() {
+    Math.seedrandom();
+    var seed = Math.floor(Math.random() * 100000001);
+    document.getElementById("randomSeed").value = seed;
 }
 
+// ---------------------------------------------------------------------------
+// Read global options
+// ---------------------------------------------------------------------------
+
+function getOptions() {
+    return {
+        randomizeLevelOrder: document.getElementById('randomizeLevelOrder')
+            ? document.getElementById('randomizeLevelOrder').checked : false,
+        includeExtras: document.getElementById('includeExtras')
+            ? document.getElementById('includeExtras').checked : false,
+        keepCastleOrder: document.getElementById('keepCastleOrder')
+            ? document.getElementById('keepCastleOrder').checked : true,
+        modes: getModeOptions(GLOBAL_PREFIX)
+    };
+}
+
+// ---------------------------------------------------------------------------
+// Level order randomization (unchanged logic)
+// ---------------------------------------------------------------------------
+
 function randomizeLevelOrder(rom, options) {
-    // Set Random Seed
     var seed = document.getElementById("randomSeed").value;
     Math.seedrandom(seed);
 
     var levelIndexes = {
-        bowser: 0x43,
-        castles: [ 0x07, 0x13, 0x1F, 0x2B, 0x37 ], // not including King Bowser's Castle because it's a special case
-        forts: [ 0x03, 0x0F, 0x1B, 0x27, 0x33, 0x3F ],
+        bowser:  0x43,
+        castles: [ 0x07, 0x13, 0x1F, 0x2B, 0x37 ],
+        forts:   [ 0x03, 0x0F, 0x1B, 0x27, 0x33, 0x3F ],
         normals: [
             0x00, 0x01, 0x02, 0x04, 0x05, 0x06,
             0x0C, 0x0D, 0x0E, 0x10, 0x11, 0x12,
@@ -33,12 +68,9 @@ function randomizeLevelOrder(rom, options) {
             0x30, 0x31, 0x32, 0x34, 0x35, 0x36,
             0x3C, 0x3D, 0x3E, 0x40, 0x41, 0x42
         ],
-        extras: [ 0x08, 0x14, 0x20, 0x2C, 0x38, 0x44 ],
+        extras:  [ 0x08, 0x14, 0x20, 0x2C, 0x38, 0x44 ],
         bonuses: [ 0x09, 0x15, 0x21, 0x2D, 0x39, 0x45 ]
     };
-
-
-    var customLevelOrder = [];
 
     if (!options.keepCastleOrder) {
         levelIndexes.normals = levelIndexes.normals.concat(levelIndexes.forts);
@@ -49,9 +81,11 @@ function randomizeLevelOrder(rom, options) {
     }
 
     levelIndexes.castles = shuffle(levelIndexes.castles);
-    levelIndexes.forts = shuffle(levelIndexes.forts);
+    levelIndexes.forts   = shuffle(levelIndexes.forts);
     levelIndexes.normals = shuffle(levelIndexes.normals);
-    levelIndexes.extras = shuffle(levelIndexes.extras);
+    levelIndexes.extras  = shuffle(levelIndexes.extras);
+
+    var customLevelOrder = [];
 
     for (var world = 1; world <= 6; world++) {
         customLevelOrder.push(levelIndexes.normals.shift()); // x-1
@@ -59,172 +93,137 @@ function randomizeLevelOrder(rom, options) {
         customLevelOrder.push(levelIndexes.normals.shift()); // x-3
 
         if (options.keepCastleOrder) {
-            customLevelOrder.push(levelIndexes.forts.shift()); // x-4, specifically use a fort
-        }
-        else {
-            customLevelOrder.push(levelIndexes.normals.shift())
+            customLevelOrder.push(levelIndexes.forts.shift()); // x-4 fort
+        } else {
+            customLevelOrder.push(levelIndexes.normals.shift());
         }
 
         customLevelOrder.push(levelIndexes.normals.shift()); // x-5
         customLevelOrder.push(levelIndexes.normals.shift()); // x-6
         customLevelOrder.push(levelIndexes.normals.shift()); // x-7
 
-        if (world == 6) {
-            customLevelOrder.push(levelIndexes.bowser); // 6-8, always put 6-8 at the end
-        }
-        else if (options.keepCastleOrder) {
-            customLevelOrder.push(levelIndexes.castles.shift()); // x-8, specifically use a castle
-        }
-        else {
+        if (world === 6) {
+            customLevelOrder.push(levelIndexes.bowser);        // 6-8 always
+        } else if (options.keepCastleOrder) {
+            customLevelOrder.push(levelIndexes.castles.shift()); // x-8 castle
+        } else {
             customLevelOrder.push(levelIndexes.normals.shift());
         }
 
         if (!options.includeExtras) {
             customLevelOrder.push(levelIndexes.extras.shift()); // x-E
-        }
-        else {
+        } else {
             customLevelOrder.push(levelIndexes.normals.shift());
         }
         customLevelOrder.push(levelIndexes.bonuses.shift()); // x-B
     }
 
+    // Apply per-level overrides: redirect map slots to their chosen level IDs
+    if (typeof levelOverrides !== 'undefined') {
+        levelOverrides.forEach(function(ov) {
+            // Find which position in customLevelOrder corresponds to this mapSlot
+            var pos = LEVEL_OFFSETS.indexOf(
+                LEVEL_OFFSETS[_mapSlotToOrderIndex(ov.mapSlot)]
+            );
+            var orderIndex = _mapSlotToOrderIndex(ov.mapSlot);
+            if (orderIndex >= 0 && orderIndex < customLevelOrder.length) {
+                customLevelOrder[orderIndex] = ov.levelId;
+            }
+        });
+    }
+
     customLevelOrder.forEach(function(level, i) {
         rom[WORLD_MAPS + LEVEL_OFFSETS[i]] = level;
     });
-    console.log(customLevelOrder)
 }
 
-let randomBinary = function() {
-    return Math.floor(Math.random() * 2);
+/**
+ * Convert a playable map slot index (0x00–0x47, skipping score/controller tiles)
+ * to an index within the 60-element LEVEL_OFFSETS array.
+ * The LEVEL_OFFSETS array is already ordered by world-map position.
+ */
+function _mapSlotToOrderIndex(mapSlot) {
+    // Map slot hex keys in levelNames are the original game level IDs.
+    // LEVEL_OFFSETS has 60 entries: 10 per world (levels 1–8, E, B), worlds 1–6.
+    // We need the position of mapSlot in the ordered playable-slot list.
+    var ordered = _orderedPlayableSlots();
+    return ordered.indexOf(mapSlot);
 }
 
-let randomInteger = function(max) {
-    return Math.floor(Math.random() * (max + 1));
+function _orderedPlayableSlots() {
+    // Returns the 60 playable slot indices in world-map order.
+    // Each world: [x-1, x-2, x-3, x-4, x-5, x-6, x-7, x-8, x-E, x-B]
+    // This matches LEVEL_OFFSETS ordering exactly.
+    var result = [];
+    var worldBases = [0x00, 0x0C, 0x18, 0x24, 0x30, 0x3C];
+    worldBases.forEach(function(base) {
+        // x-1 through x-8: offsets 0..7
+        for (var i = 0; i < 8; i++) result.push(base + i);
+        // x-E: offset 8
+        result.push(base + 8);
+        // x-B: offset 9
+        result.push(base + 9);
+    });
+    return result;
 }
 
-function generateSeed() {
-    var seed = Math.seedrandom();
-    seed = randomInteger(100000000)
-    document.getElementById("randomSeed").value = seed;
-}
+// ---------------------------------------------------------------------------
+// Level settings generation — merges global modes with per-level overrides
+// ---------------------------------------------------------------------------
 
+function generateLevelSettings(rom, options) {
+    var levelSettings = [];
+    var globalModes   = _getEnabledModesList(options.modes);
 
-function getOptions() {
-    return {
-        randomizeLevelOrder: $('input[name=randomizeLevelOrder]').is(':checked'),
-        includeExtras: $('input[name=includeExtras]').is(':checked'),
-        keepCastleOrder: $('input[name=keepCastleOrder]').is(':checked'),
+    // Build a lookup: mapSlot -> override entry
+    var overrideMap = {};
+    if (typeof levelOverrides !== 'undefined') {
+        levelOverrides.forEach(function(ov) {
+            overrideMap[ov.mapSlot] = ov;
+        });
+    }
 
-        modes: {
-            scoreRequirementMinimum: {
-                code: 0x00,
-                description: "Require Minimum Score",
+    var orderedSlots = _orderedPlayableSlots();
 
-                enabled: ($('input[name=scoreRequirementType]:checked').val() == 'minimum'),
-                parameters: littleEndianToBytes(parseInt($('input[name=scoreRequirementScore]').val()), 1)
-            },
-            drunkMode: {
-                code: 0x02,
+    LEVEL_OFFSETS.forEach(function(levelOffset, i) {
+        var mapSlot = orderedSlots[i];
+        var modesForSlot;
 
-                enabled: $('input[name=drunkMode]').is(':checked')
-            },
-            hardMode: {
-                code: 0x04,
-
-                enabled: $('input[name=hardMode]').is(':checked')
-            },
-            deathStarCounter: {
-                code: 0x06,
-
-                enabled: $('input[name=deathStarCounter]').is(':checked')
-            },
-            extendedFlutters: {
-                code: 0x08,
-
-                enabled: $('input[name=extendedFlutters]').is(':checked')
-            },
-            stickyGround: {
-                code: 0x0A,
-
-                enabled: $('input[name=stickyGround]').is(':checked')
-            },
-            filledMouth: {
-                code: 0x0C,
-
-                enabled: ($('select[name=filledMouth]').val() != ''),
-                parameters: littleEndianToBytes(MOUTH_MODIFIERS[$('select[name=filledMouth]').val()], 1)
-            },
-            speedBoost: {
-                code: 0x0E,
-
-                enabled: $('input[name=speedBoost]').is(':checked'),
-                parameters: [].concat(littleEndianToBytes(BOOST_MODIFIERS[$('select[name=speedBoostAcceleration]').val()], 2)).concat(littleEndianToBytes(BOOST_MODIFIERS[$('select[name=speedBoostMaximumSpeed]').val()], 2))
-            },
-            scoreRequirementMaximum: {
-                code: 0x10,
-
-                enabled: ($('input[name=scoreRequirementType]:checked').val() == 'maximum'),
-                parameters: littleEndianToBytes(parseInt($('input[name=scoreRequirementScore]').val()), 1)
-            },
-            scoreRequirementExact: {
-                code: 0x12,
-
-                enabled: ($('input[name=scoreRequirementType]:checked').val() == 'exact'),
-                parameters: littleEndianToBytes(parseInt($('input[name=scoreRequirementScore]').val()), 1)
-            },
-            reverseControls: {
-                code: 0x14,
-
-                enabled: $('input[name=reverseControls]').is(':checked')
-            },
-            randomEggCursor: {
-                code: 0x16,
-
-                enabled: $('input[name=randomEggCursor]').is(':checked')
-            },
-            bouncyCastle: {
-                code: 0x18,
-
-                enabled: $('input[name=bouncyCastle]').is(':checked')
-            },
-            airModifier: {
-                code: 0x1A,
-
-                enabled: ($('select[name=airModifier]').val() != ''),
-                parameters: [].concat(littleEndianToBytes(DMG_TICKS_FRAMES, 2)).concat(littleEndianToBytes(HEALTH_MOD_RATE[$('select[name=airModifier]').val()], 2))
-            },
-            noFlutters: {
-                code: 0x1C,
-
-                enabled: $('input[name=noFlutters]').is(':checked')
-            },
-            nothingTongueable: {
-                code: 0x1E,
-
-                enabled: $('input[name=nothingTongueable]').is(':checked')
-            },
-            floorModifier: {
-                code: 0x20,
-
-                enabled: ($('select[name=floorModifier]').val() != ''),
-                parameters: [].concat(littleEndianToBytes(DMG_TICKS_FRAMES, 2)).concat(littleEndianToBytes(HEALTH_MOD_RATE[$('select[name=floorModifier]').val()], 2))
-            },
-            coinModifier: {
-                code: 0x22,
-
-                enabled: ($('select[name=coinModifier]').val() != ''),
-                parameters: littleEndianToBytes(HEALTH_MOD_AMOUNT[$('select[name=coinModifier]').val()], 2)
-            },
-            flowerModifier: {
-                code: 0x24,
-
-                enabled: ($('select[name=flowerModifier]').val() != ''),
-                parameters: littleEndianToBytes(HEALTH_MOD_AMOUNT[$('select[name=flowerModifier]').val()], 2)
-            }
+        if (mapSlot !== undefined && overrideMap[mapSlot]) {
+            // Use per-level override modes instead of global
+            modesForSlot = _getEnabledModesList(overrideMap[mapSlot].modes);
+        } else {
+            modesForSlot = globalModes;
         }
-    };
+
+        modesForSlot.forEach(function(mode) {
+            levelSettings.push(mode.code & 0xFF);
+            if (typeof mode.parameters !== 'undefined' && mode.parameters) {
+                levelSettings = levelSettings.concat(mode.parameters);
+            }
+        });
+
+        levelSettings = levelSettings.concat(LEVEL_SETTINGS_ENDMARKER);
+
+        // Extra endmarkers for score and controller tiles after each world (every 10th entry)
+        if ((i + 1) % 10 === 0) {
+            levelSettings = levelSettings.concat(LEVEL_SETTINGS_ENDMARKER);
+            levelSettings = levelSettings.concat(LEVEL_SETTINGS_ENDMARKER);
+        }
+    });
+
+    rom.set(levelSettings, LEVEL_SETTINGS);
 }
 
+function _getEnabledModesList(modes) {
+    return Object.keys(modes)
+        .filter(function(k) { return modes[k].enabled; })
+        .map(function(k) { return modes[k]; });
+}
+
+// ---------------------------------------------------------------------------
+// ROM generation entry point
+// ---------------------------------------------------------------------------
 
 function generateRom() {
     var options = getOptions();
@@ -233,82 +232,35 @@ function generateRom() {
     xhr.open('GET', 'build.sfc', true);
     xhr.responseType = 'arraybuffer';
 
-    xhr.onload = function (e) {
-        if (this.status == 200) {
-            var buffer = xhr.response;
-            var rom = new Uint8Array(buffer);
+    xhr.onload = function(e) {
+        if (this.status !== 200) return;
 
-            if (options.randomizeLevelOrder) {
-                randomizeLevelOrder(rom, options);
-            }
+        var buffer = xhr.response;
+        var rom    = new Uint8Array(buffer);
 
-            generateLevelSettings(rom, options);
-
-            // this is the "everything is unlocked in file 3" debug flag
-            rom[0xB9897] = 0xEAEAEA;
-
-            fixChecksum(rom);
-
-            saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'yoshfun.sfc');
+        if (options.randomizeLevelOrder) {
+            randomizeLevelOrder(rom, options);
+        } else if (typeof levelOverrides !== 'undefined' && levelOverrides.length > 0) {
+            // Even without full randomization, apply per-level redirects
+            levelOverrides.forEach(function(ov) {
+                var orderIndex = _mapSlotToOrderIndex(ov.mapSlot);
+                if (orderIndex >= 0) {
+                    rom[WORLD_MAPS + LEVEL_OFFSETS[orderIndex]] = ov.levelId;
+                }
+            });
         }
-    }
+
+        generateLevelSettings(rom, options);
+
+        // Debug flag: unlock everything in file 3
+        rom[0xB9897] = 0xEA;
+        rom[0xB9898] = 0xEA;
+        rom[0xB9899] = 0xEA;
+
+        fixChecksum(rom);
+
+        saveAs(new Blob([buffer], { type: 'application/octet-stream' }), 'yoshfun.sfc');
+    };
 
     xhr.send();
 }
-
-function generateLevelSettings(rom, options) {
-
-    var levelSettings = [];
-    var globalModes = getEnabledModes(options);
-
-    LEVEL_OFFSETS.forEach(function(level, i) {
-        globalModes.forEach(function(mode, i) {
-            levelSettings.push(mode.code & 0xFF);
-
-            if (typeof mode.parameters !== 'undefined' && mode.parameters) {
-                levelSettings = levelSettings.concat(mode.parameters);
-            }
-        });
-
-        levelSettings = levelSettings.concat(LEVEL_SETTINGS_ENDMARKER);
-
-        // a bit of a hack but we need to account for the score and controller tiles at the end of the world maps
-        if ((i + 1) % 10 == 0) {
-            levelSettings = levelSettings.concat(LEVEL_SETTINGS_ENDMARKER);
-            levelSettings = levelSettings.concat(LEVEL_SETTINGS_ENDMARKER);
-        }
-    });
-    rom.set(levelSettings, LEVEL_SETTINGS);
-}
-
-function checkScoreRequirementType() {
-    var scoreRequirementType = $('input[name=scoreRequirementType]:checked').val();
-
-    if (scoreRequirementType == 'none') {
-        $('input[name=scoreRequirementScore]').prop('disabled', true);
-    }
-    else {
-        $('input[name=scoreRequirementScore]').prop('disabled', false);
-    }
-}
-
-function checkSpeedBoost() {
-    var speedBoostEnabled = $('input[name=speedBoost]').is(':checked');
-
-    if (speedBoostEnabled) {
-        $('select[name=speedBoostAcceleration]').prop('disabled', false);
-        $('select[name=speedBoostMaximumSpeed]').prop('disabled', false);
-    }
-    else {
-        $('select[name=speedBoostAcceleration]').prop('disabled', true);
-        $('select[name=speedBoostMaximumSpeed]').prop('disabled', true);
-    }
-}
-
-$(document).ready(function() {
-    $('input[name=scoreRequirementType]').click(checkScoreRequirementType);
-    $('input[name=speedBoost]').click(checkSpeedBoost);
-
-    checkScoreRequirementType();
-    checkSpeedBoost();
-});

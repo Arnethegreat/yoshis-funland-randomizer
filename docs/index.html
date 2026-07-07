@@ -11,225 +11,135 @@
         <script src="js/lib/bootstrap.min.js" type="text/javascript"></script>
         <script src="js/constants.js" type="text/javascript"></script>
         <script src="js/quickmafs.js" type="text/javascript"></script>
+        <script src="js/modes-ui.js" type="text/javascript"></script>
         <script src="js/settings.js" type="text/javascript"></script>
+        <script src="js/setmodes.js" type="text/javascript"></script>
     </head>
     <body>
         <div class="container">
             <h1 class="mb-4">Yoshi's Funland Randomizer</h1>
 
-            <div class="input-group input-group-sm mb-3">
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!--  Seed                                                       -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div class="input-group input-group-sm mb-4" style="max-width:320px">
                 <div class="input-group-prepend">
                     <span class="input-group-text">Seed</span>
                 </div>
-                <input class="" type="number" id="randomSeed" name="randomSeed" value="0" min="0" max="100000000">
+                <input type="number" id="randomSeed" name="randomSeed" class="form-control" value="0" min="0" max="100000000">
                 <div class="input-group-append">
-                    <button class="btn btn-primary" onclick="generateSeed()" type="submit">Random</button>
+                    <button class="btn btn-secondary" onclick="generateSeed()" type="button">Random</button>
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-12 col-sm-6 col-md-5 col-lg-4 mb-3">
-                    <div class="mb-3">
-                        <h5>Level Randomization</h5>
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!--  Section 1 — Level Randomization                           -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div class="settings-section mb-4">
+                <h4 class="settings-section-title">Level Randomization</h4>
+                <div class="col-auto form-check">
+                    <input class="form-check-input" type="checkbox" id="randomizeLevelOrder" name="randomizeLevelOrder" checked="checked" />
+                    <label class="form-check-label" for="randomizeLevelOrder">Randomize Level Order</label>
+                </div>
+                <div class="col-auto form-check">
+                    <input class="form-check-input" type="checkbox" id="keepCastleOrder" name="keepCastleOrder" checked="checked" />
+                    <label class="form-check-label" for="keepCastleOrder">Keep Fortress &amp; Castle Order</label>
+                </div>
+                <div class="col-auto form-check">
+                    <input class="form-check-input" type="checkbox" id="includeExtras" name="includeExtras" />
+                    <label class="form-check-label" for="includeExtras">Include Extras as Normal Levels</label>
+                </div>
+            </div>
 
-                        <div class="col-auto form-check">
-                            <input class="form-check-input" type="checkbox" id="randomizeLevelOrder" name="randomizeLevelOrder" checked="checked" />
-                            <label class="form-check-label" for="randomizeLevelOrder">Randomize Level Order</label>
-                        </div>
-                        <div class="col-auto form-check">
-                            <input class="form-check-input" type="checkbox" id="keepCastleOrder" name="keepCastleOrder" checked="checked" />
-                            <label class="form-check-label" for="keepCastleOrder">Keep Fortress & Castle Order</label>
-                        </div>
-                        <div class="col-auto form-check">
-                            <input class="form-check-input" type="checkbox" id="includeExtras" name="includeExtras"/>
-                            <label class="form-check-label" for="includeExtras">Include Extras as Normal levels</label>
-                        </div>
-
-                    </div>
-
-                    <div class="mb-3">
-                        <h5>Movement</h5>
-
-                        <div class="col-auto form-check">
-                            <input class="form-check-input" type="checkbox" id="drunkMode" name="drunkMode" />
-                            <label class="form-check-label" for="drunkMode">Drunk Mode</label>
-                        </div>
-                        <div class="col-auto form-check">
-                            <input class="form-check-input" type="checkbox" id="extendedFlutters" name="extendedFlutters" />
-                            <label class="form-check-label" for="extendedFlutters">All Flutters Extended</label>
-                        </div>
-                        <div class="col-auto form-check">
-                            <input class="form-check-input" type="checkbox" id="noFlutters" name="noFlutters" />
-                            <label class="form-check-label" for="noFlutters"> No Flutters</label>
-                        </div>
-                        <div class="col-auto form-check">
-                            <input class="form-check-input" type="checkbox" id="reverseControls" name="reverseControls" />
-                            <label class="form-check-label" for="reverseControls">Reverse Controls</label>
-                        </div>
-                        <div class="mb-3">
-                            <div class="col-auto form-check">
-                                <input class="form-check-input" type="checkbox" id="speedBoost" name="speedBoost" />
-                                <label class="form-check-label" for="speedBoost">Speed Boost with X Button</label>
-                            </div>
-                            <div class="col-auto form-group">
-                                <label class="col-form-label" for="speedBoostAcceleration">Acceleration</label>
-                                <select class="form-control form-control-sm" id="speedBoostAcceleration" name="speedBoostAcceleration">
-                                    <option value="accelerateSlow">Slow</option>
-                                    <option value="accelerateMedium">Medium</option>
-                                    <option value="accelerateFast">Fast</option>
-                                    <option value="accelerateVeryFast">Very Fast</option>
-                                </select>
-                            </div>
-                            <div class="col-auto form-group">
-                                <label class="col-form-label" for="speedBoostMaximumSpeed">Maximum Speed</label>
-                                <select class="form-control form-control-sm" id="speedBoostMaximumSpeed" name="speedBoostMaximumSpeed">
-                                    <option value="maximumSpeedSlow">Slow</option>
-                                    <option value="maximumSpeedMedium">Medium</option>
-                                    <option value="maximumSpeedFast">Fast</option>
-                                    <option value="maximumSpeedVeryFast">Very Fast</option>
-                                    <option value="maximumSpeedTooFast">Too Fast for Camera</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <h5>Score Requirement</h5>
-
-                        <div class="mb-3">
-                            <div class="col-auto form-check">
-                                <input class="form-check-input" type="radio" id="scoreRequirementNone" name="scoreRequirementType" value="none" checked="checked" />
-                                <label class="form-check-label" for="scoreRequirementNone">None</label>
-                            </div>
-                            <div class="col-auto form-check">
-                                <input class="form-check-input" type="radio" id="scoreRequirementMinimum" name="scoreRequirementType" value="minimum" />
-                                <label class="form-check-label" for="scoreRequirementMinimum">At Least</label>
-                            </div>
-                            <div class="col-auto form-check">
-                                <input class="form-check-input" type="radio" id="scoreRequirementExact" name="scoreRequirementType" value="exact" />
-                                <label class="form-check-label" for="scoreRequirementExact">Exactly</label>
-                            </div>
-                            <div class="col-auto form-check">
-                                <input class="form-check-input" type="radio" id="scoreRequirementMaximum" name="scoreRequirementType" value="maximum" />
-                                <label class="form-check-label" for="scoreRequirementMaximum">At Most</label>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-4 col-lg-3 col-xl-4 form-group">
-                            <input class="form-control mx-0" type="number" id="scoreRequirementScore" name="scoreRequirementScore" value="10"  min="0" max="100">
-                        </div>
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!--  Section 2 — Global Mode Settings                          -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div class="settings-section mb-4">
+                <h4 class="settings-section-title">Global Mode Settings
+                    <span class="settings-section-subtitle">Applied to every level unless overridden below</span>
+                </h4>
+                <div class="row">
+                    <div class="col-12 col-md-10 col-lg-8">
+                        <!-- Populated by renderModeControls('global', …) in settings.js -->
+                        <div id="globalModeControls"></div>
                     </div>
                 </div>
+            </div>
 
-                <div class="col-12 col-sm-6 col-md-5 col-lg-4 mb-3">
-                    <div class="mb-3">
-                        <h5>Health and the Environment</h5>
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!--  Section 3 — Per-Level Overrides                           -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div class="settings-section mb-4">
+                <h4 class="settings-section-title">Per-Level Overrides
+                    <span class="settings-section-subtitle">Override settings for a specific world-map slot</span>
+                </h4>
 
-                        <div class="col-auto form-group">
-                            <label class="col-form-label" for="floorModifier">Floor</label>
-                            <select class="form-control form-control-sm" id="floorModifier" name="floorModifier">
-                                <option value="" selected="selected">--</option>
-                                <option value="healVeryFast">Heals Very Quickly</option>
-                                <option value="healFast">Heals Quickly</option>
-                                <option value="healMedium">Heals Moderately</option>
-                                <option value="healSlow">Heals Slowly</option>
-                                <option value="damageSlow">Damages Slowly</option>
-                                <option value="damageMedium">Damages Moderately</option>
-                                <option value="damageFast">Damages Quickly</option>
-                                <option value="damageVeryFast">Damages Very Quickly</option>
-                            </select>
-                        </div>
-                        <div class="col-auto form-group">
-                            <label class="col-form-label" for="airModifier">Air</label>
-                            <select class="form-control form-control-sm" id="airModifier" name="airModifier">
-                                <option value="" selected="selected">--</option>
-                                <option value="healVeryFast">Heals Very Quickly</option>
-                                <option value="healFast">Heals Quickly</option>
-                                <option value="healMedium">Heals Moderately</option>
-                                <option value="healSlow">Heals Slowly</option>
-                                <option value="damageSlow">Damages Slowly</option>
-                                <option value="damageMedium">Damages Moderately</option>
-                                <option value="damageFast">Damages Quickly</option>
-                                <option value="damageVeryFast">Damages Very Quickly</option>
-                            </select>
-                        </div>
-                        <div class="col-auto form-group">
-                            <label class="col-form-label" for="coinModifier">Coins</label>
-                            <select class="form-control form-control-sm" id="coinModifier" name="coinModifier">
-                                <option value="" selected="selected">--</option>
-                                <option value="healTen">Heal 10 Stars</option>
-                                <option value="healFive">Heal 5 Stars</option>
-                                <option value="healTwo">Heal 2 Stars</option>
-                                <option value="healOne">Heal 1 Star</option>
-                                <option value="damageOne">Damage 1 Stars</option>
-                                <option value="damageTwo">Damage 2 Stars</option>
-                                <option value="damageFive">Damage 5 Stars</option>
-                                <option value="damageTen">Damage 10 Stars</option>
-                                <option value="damageTwenty">Damage 20 Stars</option>
-                                <option value="damageAll">Damage All Stars</option>
-                            </select>
-                        </div>
-                        <div class="col-auto form-group">
-                            <label class="col-form-label" for="flowerModifier">Flowers</label>
-                            <select class="form-control form-control-sm" id="flowerModifier" name="flowerModifier">
-                                <option value="" selected="selected">--</option>
-                                <option value="healTen">Heal 10 Stars</option>
-                                <option value="healFive">Heal 5 Stars</option>
-                                <option value="healTwo">Heal 2 Stars</option>
-                                <option value="healOne">Heal 1 Star</option>
-                                <option value="damageOne">Damage 1 Stars</option>
-                                <option value="damageTwo">Damage 2 Stars</option>
-                                <option value="damageFive">Damage 5 Stars</option>
-                                <option value="damageTen">Damage 10 Stars</option>
-                                <option value="damageTwenty">Damage 20 Stars</option>
-                                <option value="damageAll">Damage All Stars</option>
-                            </select>
-                        </div>
-                        <div class="col-auto form-check">
-                            <input class="form-check-input" type="checkbox" id="deathStarCounter" name="deathStarCounter" />
-                            <label class="form-check-label" for="deathStarCounter">Instant Death with 0 Stars</label>
-                        </div>
-                        <div class="col-auto form-check">
-                            <input class="form-check-input" type="checkbox" id="hardMode" name="hardMode" />
-                            <label class="form-check-label" for="hardMode">One-Hit Deaths</label>
-                        </div>
-                        <div class="col-auto form-check">
-                            <input class="form-check-input" type="checkbox" id="bouncyCastle" name="bouncyCastle" />
-                            <label class="form-check-label" for="bouncyCastle">Bouncy Castle</label>
-                        </div>
-                        <div class="col-auto form-check">
-                            <input class="form-check-input" type="checkbox" id="stickyGround" name="stickyGround" />
-                            <label class="form-check-label" for="stickyGround">Sticky Ground</label>
+                <div class="row">
+                    <!-- ── Builder panel ─────────────────────────────── -->
+                    <div class="col-12 col-lg-6 mb-3">
+                        <div class="override-builder" id="levelOverrideBuilder">
+                            <div class="override-builder-header">Configure Override</div>
+
+                            <div class="override-builder-body">
+                                <!-- Map slot (which position in the world map) -->
+                                <div class="form-group">
+                                    <label class="col-form-label font-weight-bold" for="plb_mapSlot">World Map Slot</label>
+                                    <select class="form-control form-control-sm" id="plb_mapSlot">
+                                        <!-- Populated by populateLevelSelects() -->
+                                    </select>
+                                    <small class="form-text text-muted">The map position that will use these settings.</small>
+                                </div>
+
+                                <!-- Target level (which level actually loads) -->
+                                <div class="form-group">
+                                    <label class="col-form-label font-weight-bold" for="plb_levelId">Level to Play</label>
+                                    <select class="form-control form-control-sm" id="plb_levelId">
+                                        <!-- Populated by populateLevelSelects() -->
+                                    </select>
+                                    <small class="form-text text-muted">Leave matching the slot above to keep the original level. Change to redirect the slot to a different level.</small>
+                                </div>
+
+                                <!-- Mode controls — rendered by renderModeControls() -->
+                                <div class="override-modes-container">
+                                    <div class="override-modes-label font-weight-bold mb-1">Modes for this slot</div>
+                                    <div id="plb_modeControls"></div>
+                                </div>
+
+                                <div class="mt-3">
+                                    <button class="btn btn-primary btn-sm" id="plb_applyBtn" type="button">Add Override</button>
+                                    <button class="btn btn-outline-secondary btn-sm ml-1" type="button"
+                                        onclick="document.getElementById('levelOverrideBuilder').dataset.editingIndex='';
+                                                 document.getElementById('plb_applyBtn').textContent='Add Override';">
+                                        Cancel Edit
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="mb-3">
-                        <h5>Egg and Mouth</h5>
-
-                        <div class="col-auto form-check">
-                            <input class="form-check-input" type="checkbox" id="nothingTongueable" name="nothingTongueable" />
-                            <label class="form-check-label" for="nothingTongueable">Nothing Is Tongueable</label>
-                        </div>
-                        <div class="col-auto form-check">
-                            <input class="form-check-input" type="checkbox" id="randomEggCursor" name="randomEggCursor" />
-                            <label class="form-check-label" for="randomEggCursor">Egg Cursor Randomized</label>
-                        </div>
-                        <div class="col-auto form-group">
-                            <label class="col-form-label" for="filledMouth">Mouth Always Filled With</label>
-                            <select class="form-control form-control-sm" id="filledMouth" name="filledMouth">
-                                <option value="" selected="selected">--</option>
-                                <option value="bubbles">Bubbles</option>
-                                <option value="seeds">Melon Seeds</option>
-                            </select>
+                    <!-- ── Applied overrides list ────────────────────── -->
+                    <div class="col-12 col-lg-6 mb-3">
+                        <div class="override-list-panel">
+                            <div class="override-list-header">Applied Overrides</div>
+                            <div id="levelOverrideList" class="override-list-body">
+                                <!-- Populated by renderOverrideList() -->
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="row">
-                <div class="col-12 col-sm-12 col-md-10 col-lg-8 text-center">
-                    <button class="btn btn-primary" type="submit" onclick="generateRom()">Generate ROM</button>
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!--  Generate                                                   -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div class="row mb-4">
+                <div class="col-12 col-md-10 col-lg-8">
+                    <button class="btn btn-primary btn-lg btn-block" type="button" onclick="generateRom()">
+                        Generate ROM
+                    </button>
                 </div>
             </div>
-        </div>
+
+        </div><!-- /container -->
     </body>
 </html>
