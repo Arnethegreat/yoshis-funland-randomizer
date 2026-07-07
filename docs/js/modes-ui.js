@@ -11,6 +11,43 @@
  */
 
 // ---------------------------------------------------------------------------
+// Tooltip text — edit these strings to update descriptions
+// ---------------------------------------------------------------------------
+
+var MODE_TIPS = {
+    drunkMode:              'Yoshi is permanently dizzy (as if touching a Fuzzy). Impaired movement for the whole level.',
+    extendedFlutters:       'Yoshi can always perform an extended flutter jump, as if he just bounced off an enemy. No limit on flutter height.',
+    noFlutters:             'Flutters are completely disabled. Yoshi cannot gain extra height by flapping his legs.',
+    reverseControls:        'Left and Right inputs are swapped for the entire level, just like the reverse-controls enemy in 4-E.',
+    walljumps:              'Allows Yoshi to jump off walls. Work-in-progress — left-side kick not fully implemented yet.',
+    speedBoost:             'Press the X button to get a burst of horizontal speed. Acceleration and max speed are configurable below. A lil buggy for now :3',
+    speedBoostAcceleration: 'How quickly the speed boost builds up each frame while X is held.',
+    speedBoostMaximumSpeed: 'The highest speed the boost can reach. "Too Fast for Camera" may cause the camera to lag behind.',
+    floorModifier:          'What happens to Yoshi\'s star count while touching the ground. Damage turns the floor into lava; healing restores stars.',
+    airModifier:            'What happens to Yoshi\'s star count while airborne (not touching ground or a platform). Pairs well with Instant Death at 0 Stars.',
+    coinModifier:           'Collecting a coin gives or removes this many stars. Negative values act as poison coins.',
+    flowerModifier:         'Collecting a flower gives or removes this many stars. Negative values act as poison flowers.',
+    deathStarCounter:       'If the star counter reaches 0, Yoshi dies instantly. Designed to be used with Floor, Air, Coin, or Flower modifiers. Use with',
+    hardMode:               'Any hit immediately drops the star counter to 0 (one-hit kill unless paired with a regen source or instantly recollect Mario).',
+    bouncyCastle:           'Yoshi bounces off every surface he lands on, like a rubber ball. Ground pounds launch him extra high.',
+    stickyGround:           'Ground movement is extremely slow; Yoshi is stuck to the floor. Air speed is unaffected.',
+    scoreRequirementType:   'Set a condition on the level score (stars+flowers+red coins, 0–100) that must be met to pass through the goal ring.',
+    scoreRequirementScore:  'The score threshold value (0–100). Stars are worth 1 pt each (up to 30), flowers 10 pts each, red coins 1 pt each.',
+    nothingTongueable:      'Yoshi\'s tongue cannot grab any enemy or sprite. Eggs can still be thrown but nothing new can be collected.',
+    randomEggCursor:        'The egg-throw cursor angle is randomised every frame, making it impossible to aim precisely.',
+    filledMouth:            'Yoshi\'s mouth is permanently filled with the chosen ammo type and refills instantly after firing.'
+};
+
+/** Build a tooltip badge element string for the given key, if a tip exists. */
+function _tip(key) {
+    var text = MODE_TIPS[key];
+    if (!text) return '';
+    // Escape single quotes for the data attribute
+    var safe = text.replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+    return '<span class="tip" data-tip="' + safe + '">?</span>';
+}
+
+// ---------------------------------------------------------------------------
 // Template helpers
 // ---------------------------------------------------------------------------
 
@@ -18,26 +55,27 @@ function _checkbox(prefix, name, label, checked) {
     var id = prefix + '_' + name;
     return '<div class="col-auto form-check">'
         + '<input class="form-check-input" type="checkbox" id="' + id + '" name="' + id + '"' + (checked ? ' checked="checked"' : '') + ' />'
-        + '<label class="form-check-label" for="' + id + '">' + label + '</label>'
+        + '<label class="form-check-label" for="' + id + '">' + label + _tip(name) + '</label>'
         + '</div>';
 }
 
 function _radio(prefix, group, value, label, checked) {
     var id = prefix + '_' + group + '_' + value;
     var name = prefix + '_' + group;
+    // Tip key is the group name (e.g. 'scoreRequirementType') for the first radio only
+    var tipHtml = (value === 'none') ? _tip(group) : '';
     return '<div class="col-auto form-check">'
         + '<input class="form-check-input" type="radio" id="' + id + '" name="' + name + '" value="' + value + '"' + (checked ? ' checked="checked"' : '') + ' />'
-        + '<label class="form-check-label" for="' + id + '">' + label + '</label>'
+        + '<label class="form-check-label" for="' + id + '">' + label + tipHtml + '</label>'
         + '</div>';
 }
 
 function _select(prefix, name, label, options, selectedValue) {
     var id = prefix + '_' + name;
     var html = '<div class="col-auto form-group">';
-    if (label) html += '<label class="col-form-label" for="' + id + '">' + label + '</label>';
+    if (label) html += '<label class="col-form-label" for="' + id + '">' + label + _tip(name) + '</label>';
     html += '<select class="form-control form-control-sm" id="' + id + '" name="' + id + '">';
     options.forEach(function(opt) {
-        var sel = (opt.value === (selectedValue !== undefined ? selectedValue : opt.value)) ? '' : '';
         html += '<option value="' + opt.value + '"' + (opt.value === selectedValue ? ' selected="selected"' : '') + '>' + opt.label + '</option>';
     });
     html += '</select></div>';
@@ -47,7 +85,7 @@ function _select(prefix, name, label, options, selectedValue) {
 function _number(prefix, name, label, value, min, max) {
     var id = prefix + '_' + name;
     return '<div class="col-6 col-md-4 form-group">'
-        + (label ? '<label class="col-form-label" for="' + id + '">' + label + '</label>' : '')
+        + (label ? '<label class="col-form-label" for="' + id + '">' + label + _tip(name) + '</label>' : '')
         + '<input class="form-control form-control-sm" type="number" id="' + id + '" name="' + id + '" value="' + value + '" min="' + min + '" max="' + max + '" />'
         + '</div>';
 }

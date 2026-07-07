@@ -89,13 +89,18 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ─── Override list panel ───────────────────────────────────────────────── */
 
+/* Make the two columns stretch to the same height */
+.override-columns-row {
+    align-items: stretch;
+}
+
 .override-list-panel {
     border: 1px solid #dee2e6;
     border-radius: 6px;
     overflow: hidden;
-    height: 100%;
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 .override-list-header {
@@ -105,6 +110,7 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.88rem;
     font-weight: 600;
     letter-spacing: 0.02em;
+    flex-shrink: 0;
 }
 
 .override-list-body {
@@ -113,7 +119,6 @@ h1, h2, h3, h4, h5, h6 {
     flex: 1;
     overflow-y: auto;
     min-height: 60px;
-    max-height: 480px;
 }
 
 /* ─── Override cards ────────────────────────────────────────────────────── */
@@ -170,4 +175,88 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 0.72rem;
     line-height: 1.4;
     border-radius: 3px;
+}
+
+/* ─── Tooltip badge ─────────────────────────────────────────────────────── */
+
+.tip {
+    display: inline-block;
+    position: relative;
+    width: 14px;
+    height: 14px;
+    line-height: 14px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-align: center;
+    border-radius: 50%;
+    background: #adb5bd;
+    color: #fff;
+    cursor: default;
+    vertical-align: middle;
+    margin-left: 4px;
+    flex-shrink: 0;
+    /* keep the ? from wrapping onto a new line */
+    white-space: nowrap;
+}
+
+.tip::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #343a40;
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 400;
+    line-height: 1.4;
+    padding: 5px 8px;
+    border-radius: 4px;
+    white-space: normal;
+    width: 220px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 1000;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+/* small caret pointing down */
+.tip::before {
+    content: '';
+    position: absolute;
+    bottom: calc(100% + 1px);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: #343a40;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 1001;
+}
+
+.tip:hover::after,
+.tip:hover::before {
+    opacity: 1;
+}
+
+/* For tips near the bottom of the page, flip upward automatically if needed */
+.tip.tip-below::after {
+    bottom: auto;
+    top: calc(100% + 6px);
+}
+.tip.tip-below::before {
+    bottom: auto;
+    top: calc(100% + 1px);
+    border-top-color: transparent;
+    border-bottom-color: #343a40;
+}
+
+/* Align label+tip on the same baseline row */
+.form-check-label,
+.col-form-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
 }
