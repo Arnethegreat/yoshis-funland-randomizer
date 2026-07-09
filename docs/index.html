@@ -14,10 +14,49 @@
         <script src="js/modes-ui.js" type="text/javascript"></script>
         <script src="js/settings.js" type="text/javascript"></script>
         <script src="js/setmodes.js" type="text/javascript"></script>
+        <script src="js/presets.js" type="text/javascript"></script>
+        <script src="js/saveload.js" type="text/javascript"></script>
     </head>
     <body>
         <div class="container">
-            <h1 class="mb-4">Yoshi's Funland Randomizer</h1>
+            <h1 class="mb-3">Yoshi's Funland Randomizer</h1>
+
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <!--  Save / Load / Presets bar                                  -->
+            <!-- ═══════════════════════════════════════════════════════════ -->
+            <div class="saveload-bar mb-4">
+
+                <!-- Preset picker -->
+                <div class="saveload-group">
+                    <label class="saveload-label">Preset</label>
+                    <select class="form-control form-control-sm saveload-select" id="presetSelect">
+                        <option value="">-- Choose a preset --</option>
+                    </select>
+                    <button class="btn btn-sm btn-outline-secondary" id="loadPresetBtn" type="button">Load</button>
+                </div>
+
+                <div class="saveload-divider"></div>
+
+                <!-- Save / Load file -->
+                <div class="saveload-group">
+                    <label class="saveload-label">Session</label>
+                    <button class="btn btn-sm btn-outline-primary" id="saveSettingsBtn" type="button">
+                        ↓ Save
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary" id="loadSettingsBtn" type="button">
+                        ↑ Load
+                    </button>
+                    <!-- Hidden file input -->
+                    <input type="file" id="loadSettingsInput" accept=".json" style="display:none" />
+                </div>
+
+                <!-- Status message -->
+                <div id="saveLoadMessage" class="saveload-message" style="display:none"></div>
+
+            </div>
+
+            <!-- Preset description (shown when a preset is selected) -->
+            <div id="presetDescription" class="preset-description mb-3" style="display:none"></div>
 
             <!-- ═══════════════════════════════════════════════════════════ -->
             <!--  Seed                                                       -->

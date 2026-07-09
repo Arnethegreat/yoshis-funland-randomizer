@@ -233,6 +233,124 @@ function _bindScoreToggle(prefix) {
 }
 
 // ---------------------------------------------------------------------------
+// Apply a raw settings snapshot back onto a rendered panel
+// (used by save/load system to restore global panel or a per-level builder)
+// ---------------------------------------------------------------------------
+
+/**
+ * Writes a raw settings snapshot (as produced by collectRawForPrefix) back
+ * into the DOM controls identified by `prefix`.
+ *
+ * raw shape:
+ *   {
+ *     drunkMode, hardMode, deathStarCounter, extendedFlutters, noFlutters,
+ *     reverseControls, walljumps, speedBoost, bouncyCastle, stickyGround,
+ *     nothingTongueable, randomEggCursor,         -- booleans
+ *     floorModifier, airModifier, coinModifier, flowerModifier,
+ *     filledMouth, speedBoostAcceleration, speedBoostMaximumSpeed,  -- strings
+ *     scoreRequirementType,                        -- 'none'|'minimum'|'maximum'|'exact'
+ *     scoreRequirementScore                        -- number
+ *   }
+ */
+function applyRawModesToPrefix(raw, prefix) {
+    if (!raw) return;
+
+    function setCheck(name, val) {
+        var el = document.getElementById(prefix + '_' + name);
+        if (el) el.checked = !!val;
+    }
+    function setSelect(name, val) {
+        var el = document.getElementById(prefix + '_' + name);
+        if (el) el.value = val || '';
+    }
+    function setRadio(group, val) {
+        var el = document.querySelector(
+            'input[name="' + prefix + '_' + group + '"][value="' + (val || 'none') + '"]'
+        );
+        if (el) { el.checked = true; el.dispatchEvent(new Event('change', { bubbles: true })); }
+    }
+    function setNumber(name, val) {
+        var el = document.getElementById(prefix + '_' + name);
+        if (el) el.value = (val !== undefined && val !== null) ? val : '';
+    }
+
+    setCheck('drunkMode',        raw.drunkMode);
+    setCheck('hardMode',         raw.hardMode);
+    setCheck('deathStarCounter', raw.deathStarCounter);
+    setCheck('extendedFlutters', raw.extendedFlutters);
+    setCheck('noFlutters',       raw.noFlutters);
+    setCheck('reverseControls',  raw.reverseControls);
+    setCheck('walljumps',        raw.walljumps);
+    setCheck('speedBoost',       raw.speedBoost);
+    setCheck('bouncyCastle',     raw.bouncyCastle);
+    setCheck('stickyGround',     raw.stickyGround);
+    setCheck('nothingTongueable',raw.nothingTongueable);
+    setCheck('randomEggCursor',  raw.randomEggCursor);
+
+    setSelect('floorModifier',          raw.floorModifier          || '');
+    setSelect('airModifier',            raw.airModifier            || '');
+    setSelect('coinModifier',           raw.coinModifier           || '');
+    setSelect('flowerModifier',         raw.flowerModifier         || '');
+    setSelect('filledMouth',            raw.filledMouth            || '');
+    setSelect('speedBoostAcceleration', raw.speedBoostAcceleration || 'accelerateMedium');
+    setSelect('speedBoostMaximumSpeed', raw.speedBoostMaximumSpeed || 'maximumSpeedMedium');
+
+    setRadio('scoreRequirementType', raw.scoreRequirementType || 'none');
+    setNumber('scoreRequirementScore', raw.scoreRequirementScore !== undefined ? raw.scoreRequirementScore : 10);
+
+    // Re-trigger dependent UI toggles
+    var speedBoostEl = document.getElementById(prefix + '_speedBoost');
+    if (speedBoostEl) speedBoostEl.dispatchEvent(new Event('change'));
+}
+
+/**
+ * Read every raw control value from a rendered prefix panel.
+ * Returns an object compatible with applyRawModesToPrefix().
+ */
+function collectRawForPrefix(prefix) {
+    function getCheck(name) {
+        var el = document.getElementById(prefix + '_' + name);
+        return el ? el.checked : false;
+    }
+    function getSelect(name) {
+        var el = document.getElementById(prefix + '_' + name);
+        return el ? el.value : '';
+    }
+    function getRadio(group) {
+        var el = document.querySelector('input[name="' + prefix + '_' + group + '"]:checked');
+        return el ? el.value : 'none';
+    }
+    function getNumber(name) {
+        var el = document.getElementById(prefix + '_' + name);
+        return el ? parseInt(el.value) : 0;
+    }
+
+    return {
+        drunkMode:              getCheck('drunkMode'),
+        hardMode:               getCheck('hardMode'),
+        deathStarCounter:       getCheck('deathStarCounter'),
+        extendedFlutters:       getCheck('extendedFlutters'),
+        noFlutters:             getCheck('noFlutters'),
+        reverseControls:        getCheck('reverseControls'),
+        walljumps:              getCheck('walljumps'),
+        speedBoost:             getCheck('speedBoost'),
+        bouncyCastle:           getCheck('bouncyCastle'),
+        stickyGround:           getCheck('stickyGround'),
+        nothingTongueable:      getCheck('nothingTongueable'),
+        randomEggCursor:        getCheck('randomEggCursor'),
+        floorModifier:          getSelect('floorModifier'),
+        airModifier:            getSelect('airModifier'),
+        coinModifier:           getSelect('coinModifier'),
+        flowerModifier:         getSelect('flowerModifier'),
+        filledMouth:            getSelect('filledMouth'),
+        speedBoostAcceleration: getSelect('speedBoostAcceleration'),
+        speedBoostMaximumSpeed: getSelect('speedBoostMaximumSpeed'),
+        scoreRequirementType:   getRadio('scoreRequirementType'),
+        scoreRequirementScore:  getNumber('scoreRequirementScore')
+    };
+}
+
+// ---------------------------------------------------------------------------
 // Read back current values from a rendered panel
 // ---------------------------------------------------------------------------
 
